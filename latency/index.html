@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Netprobe — Health</title>
+</head>
+<body>
+
+  <h1>Netprobe Health</h1>
+
+  <button id="runBtn">Run Test</button>
+
+  <pre id="output">Idle.</pre>
+
+  <script type="module">
+    import { runHealthTest } from "/assets/js/apps/getHealth.js";
+
+    const runBtn = document.getElementById("runBtn");
+    const output = document.getElementById("output");
+
+    runBtn.addEventListener("click", async () => {
+      runBtn.disabled = true;
+      output.textContent = "Running test...\n";
+
+      try {
+        const result = await runHealthTest({
+          stabilityDuration: 5000,
+          stabilityInterval: 100
+        });
+
+        const { info, handshake, latency } = result;
+
+        const report = {
+          timestamp: new Date(result.timestamp).toISOString(),
+          edge: info?.colo || "unknown",
+          protocol: info?.http || "unknown",
+          tls: info?.tls || "unknown",
+          asn: info?.asn || "unknown",
+          isp: info?.isp || "unknown",
+
+          latency: {
+            median: latency?.avg ?? null,
+            jitter: latency?.jitter ?? null,
+            min: latency?.min ?? null,
+            max: latency?.max ?? null,
+            loss: latency?.loss ?? null
+          },
+
+          handshake: {
+            cold: handshake?.cold ?? null,
+            warm: handshake?.warm ?? null
+          }
+        };
+
+        output.textContent = JSON.stringify(report, null, 2);
+
+      } catch (err) {
+        output.textContent = "Error:\n" + (err.message || err);
+      }
+
+      runBtn.disabled = false;
+    });
+  </script>
+
+</body>
+</html>

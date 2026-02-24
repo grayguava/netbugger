@@ -3,320 +3,157 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Connection Diagnostics — Dashboard</title>
-  <link rel="stylesheet" href="/assets/css/styles.css">
-  <style>
-    /* Summary band color overrides — inline to keep CSS clean */
-    .band-ok   { border-color: #3dba7e; background: rgba(61,186,126,.06); }
-    .band-warn { border-color: #e09a3a; background: rgba(224,154,58,.06); }
-    .band-err  { border-color: #e05252; background: rgba(224,82,82,.06); }
-    #summary-band .card-body { padding: 10px 14px; display:flex; align-items:center; gap:10px; }
-    #summary-band .card-body span { font-family: 'JetBrains Mono',monospace; font-size:12px; color:#e4e7f0; }
-    #summary-band .card-body small { font-size:10px; color:#666c7e; margin-left:auto; font-family:'JetBrains Mono',monospace; }
-
-    /* Map: reserved for OpenStreetMap integration */
-  </style>
+  <title>Libreprobe — Connection Intelligence</title>
+  <meta name="description" content="See exactly how you connect to the internet — edge location, protocol, ISP, and more.">
+  <link rel="stylesheet" href="/assets/vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="/assets/css/fonts.css">
+  <link rel="stylesheet" href="/assets/css/nav.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/footer.css">
 </head>
 <body>
 
-<div class="dash">
-
-  <!-- ── TOPBAR ── -->
-  <div class="topbar">
-    <div class="topbar-brand">
-      CF <span class="topbar-brand-sep">/</span> NET DIAGNOSTICS
-    </div>
-
-    <div class="topbar-status">
-      <span class="led" id="led"></span>
-      <span id="led-label">idle</span>
-    </div>
-
-    <div style="margin-left:auto; display:flex; align-items:center; gap:8px;">
-      <div class="topbar-clock" id="clock"></div>
-      <button class="topbar-btn ghost hidden" id="btn-export">Export</button>
-      <button class="topbar-btn" id="btn-run">▶ Run</button>
-    </div>
-  </div>
-
-  <!-- ── MAIN ── -->
-  <div class="main">
-
-    
-      <!-- SUMMARY BAND -->
-      <div class="card" id="summary-band">
-        <div class="card-body">
-          <span id="summary-text">—</span>
-          <small id="ts"></small>
-        </div>
-      </div>
-
-      <!-- ROW 1: 4 KPI cards -->
-      <div class="section-label">Key Metrics</div>
-      <div class="row row-4">
-
-        <div class="card animate">
-          <div class="kpi">
-            <div class="kpi-label">Avg Latency</div>
-            <div><span class="kpi-value" id="kpi-lat">—</span><span class="kpi-unit">ms</span></div>
-            <div class="kpi-sub"><span id="kpi-lat-sub"></span></div>
-            <div class="sparkline-wrap">
-              <div id="spark-lat" style="width:100%;height:36px;"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card animate" style="animation-delay:.04s">
-          <div class="kpi">
-            <div class="kpi-label">Jitter</div>
-            <div><span class="kpi-value" id="kpi-jitter">—</span><span class="kpi-unit">ms</span></div>
-            <div class="kpi-sub">Variance</div>
-            <div class="sparkline-wrap">
-              <div id="spark-jitter" style="width:100%;height:36px;"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card animate" style="animation-delay:.08s">
-          <div class="kpi">
-            <div class="kpi-label">Throughput</div>
-            <div><span class="kpi-value" id="kpi-tp">—</span><span class="kpi-unit" id="kpi-tp-unit">MB/s</span></div>
-            <div class="kpi-sub">Estimated capacity</div>
-            <div class="sparkline-wrap">
-              <div id="spark-tp" style="width:100%;height:36px;"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card animate" style="animation-delay:.12s">
-          <div class="kpi">
-            <div class="kpi-label">Handshake</div>
-            <div>
-              <span class="kpi-value" style="font-size:20px" id="kpi-cold">—</span>
-              <span class="kpi-unit">ms cold</span>
-            </div>
-            <div class="kpi-sub">
-              <span id="kpi-warm">—</span><span class="text-dim"> ms warm</span>
-            </div>
-            <div class="sparkline-wrap">
-              <div id="spark-cold" style="width:100%;height:36px;"></div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ROW 2: Charts -->
-      <div class="section-label">Network Topology</div>
-      <div class="row row-2">
-
-        <div class="card animate" style="animation-delay:.1s">
-          <div class="card-head">
-            <span class="card-title">Latency — ms</span>
-            <span class="card-badge" id="badge-lat-range">rolling</span>
-          </div>
-          <div class="chart-area" style="height:140px;">
-            <div id="chart-latency" style="width:100%;height:140px;"></div>
-          </div>
-        </div>
-
-        <div class="card animate" style="animation-delay:.14s">
-          <div class="card-head">
-            <span class="card-title">Throughput — MB/s</span>
-            <span class="card-badge">rolling</span>
-          </div>
-          <div class="chart-area" style="height:140px;">
-            <div id="chart-tp" style="width:100%;height:140px;"></div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ROW 3: Map + Connection Detail + Handshake Meters -->
-      <div class="section-label">Connection</div>
-      <div class="row" style="grid-template-columns: 1.6fr 1fr 1fr;">
-
-        
-        
-<!-- Edge Location -->
-<div class="card animate" style="animation-delay:.1s">
-  <div class="card-head">
-    <span class="card-title">Edge Location</span>
-    <span class="card-badge" id="pop-city-label">—</span>
-  </div>
-
-  <div id="map-placeholder" style="height:260px;position:relative;overflow:hidden;border-radius:12px;">
-    
-    <!-- Shown before results -->
-    <div id="map-loading"
-         style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#3d4251;">
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2a2c30" stroke-width="1.5">
-        <path d="M3 7l6-3 6 3 6-3v13l-6 3-6-3-6 3V7z"/>
-        <path d="M9 4v13M15 7v13"/>
+<!-- ── NAV ─────────────────────────────────────────────── -->
+<nav class="nav">
+  <a href="/" class="nav-brand">
+    <div class="nav-brand-mark">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="2" fill="#f4efe6"/>
+        <path d="M4.5 11.5a5 5 0 0 1 0-7" stroke="#c8c2b0" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M11.5 4.5a5 5 0 0 1 0 7" stroke="#c8c2b0" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M2.5 13.5a8 8 0 0 1 0-11" stroke="#7a8f6e" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M13.5 2.5a8 8 0 0 1 0 11" stroke="#7a8f6e" stroke-width="1.5" stroke-linecap="round"/>
       </svg>
-      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;">
-        Waiting for diagnostic…
+    </div>
+    <span class="nav-brand-name">Libreprobe</span>
+    <span class="nav-brand-tag">Beta</span>
+  </a>
+  <div class="nav-links">
+    <a href="/latency" class="nav-link">LatencyTest</a>
+    <a href="/about"  class="nav-link">About</a>
+    <a href="https://github.com/grayguava/net" target="_blank" rel="noopener" class="nav-gh" aria-label="GitHub">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+      </svg>
+    </a>
+  </div>
+</nav>
+
+
+<!-- ── SPLIT HERO ──────────────────────────────────────── -->
+<div class="split">
+
+  <!-- LEFT: hero text + quick facts -->
+  <div class="split-left fade-up">
+    <div class="hero-eyebrow">Connection Intelligence</div>
+
+    <div class="hero-label">You're connecting from</div>
+    <div class="hero-ip skeleton" id="hero-ip">&nbsp;</div>
+    <div class="hero-location skeleton" id="hero-location">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+
+    <p class="hero-sub">
+      Get information about your network — edge location,
+      protocol, ISP, and routing via Cloudflare's global network.
+    </p>
+
+    <div class="hero-status-row">
+      <div class="status-pill">
+        <span class="status-dot" id="hero-status-dot"></span>
+        <span id="hero-status-text">Fetching connection data…</span>
+      </div>
+      <button class="refresh-btn" id="refreshBtn" aria-label="Refresh connection data">
+        <svg class="refresh-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13.5 8a5.5 5.5 0 1 1-1.4-3.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 2v3.5H8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="hero-actions">
+      <a href="/info" class="hero-action-link">View more info <span class="action-arrow">↗</span></a>
+      <span class="hero-action-sep">|</span>
+      <a href="/test" class="hero-action-link">Run a network test <span class="action-arrow">↗</span></a>
+    </div>
+    <div class="hero-facts">
+      <div>
+        <div class="hero-fact-label">ISP</div>
+        <div class="hero-fact-val skeleton" id="hf-isp">&nbsp;</div>
+      </div>
+      <div>
+        <div class="hero-fact-label">ASN</div>
+        <div class="hero-fact-val skeleton" id="hf-asn">&nbsp;</div>
+      </div>
+      <div>
+        <div class="hero-fact-label">TLS Version</div>
+        <div class="hero-fact-val green skeleton" id="hf-tls">&nbsp;</div>
+      </div>
+      <div>
+        <div class="hero-fact-label">HTTP Version</div>
+        <div class="hero-fact-val green skeleton" id="hf-http">&nbsp;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: map (top) + key info card (bottom) -->
+  <div class="split-right fade-up-1">
+
+    <!-- Map -->
+    <div class="map-wrap">
+      <div id="map"></div>
+      <div class="map-overlay" id="map-overlay" style="display:none"></div>
+    </div>
+
+    <!-- Key info card -->
+    <div class="right-card">
+  <div class="right-card-title">Edge Details</div>
+  <div class="kv-list">
+    <div class="kv-row">
+      <span class="kv-key">PoP Code</span>
+      <span class="kv-val moss skeleton" id="kv-colo">&nbsp;&nbsp;&nbsp;</span>
+    </div>
+    <div class="kv-row">
+      <span class="kv-key">Edge City</span>
+      <span class="kv-val skeleton" id="kv-edge-city">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    </div>
+    <div class="kv-row">
+      <span class="kv-key">Edge Country</span>
+      <span class="kv-val skeleton" id="kv-edge-country">&nbsp;&nbsp;&nbsp;</span>
+    </div>
+    <div class="kv-row">
+      <span class="kv-key">Edge Provider</span>
+      <span class="kv-val">
+        <a href="https://cloudflare.com" target="_blank" rel="noopener" class="kv-provider-link">Cloudflare</a>
       </span>
     </div>
-
-    <!-- Actual map -->
-    <div id="edge-map"
-         style="height:100%;width:100%;display:none;"></div>
-
+    <div class="kv-row">
+      <span class="kv-key">Ray ID</span>
+      <span class="kv-val dim skeleton" id="kv-ray">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    </div>
   </div>
 </div>
 
-        
-        
-        <!-- Connection Details -->
-        <div class="card animate" style="animation-delay:.14s">
-          <div class="card-head">
-            <span class="card-title">Connection</span>
-            <div style="display:flex;gap:4px;">
-              <span class="proto-badge" id="proto-badge-http">—</span>
-              <span class="proto-badge" id="proto-badge-tls">—</span>
-            </div>
-          </div>
-          <div class="card-body" style="padding:0;">
-            <div class="server-grid">
-              <div class="server-cell">
-                <div class="server-cell-label">POP</div>
-                <div class="server-cell-val blue" id="det-pop">—</div>
-              </div>
-              <div class="server-cell">
-                <div class="server-cell-label">Country</div>
-                <div class="server-cell-val" id="det-country">—</div>
-              </div>
-              <div class="server-cell">
-                <div class="server-cell-label">City</div>
-                <div class="server-cell-val" id="det-city">—</div>
-              </div>
-              <div class="server-cell">
-                <div class="server-cell-label">ASN</div>
-                <div class="server-cell-val" id="det-asn">—</div>
-              </div>
-              <div class="server-cell" style="grid-column:1/-1;">
-                <div class="server-cell-label">ISP</div>
-                <div class="server-cell-val" id="det-isp">—</div>
-              </div>
-              <div class="server-cell">
-                <div class="server-cell-label">Protocol</div>
-                <div class="server-cell-val green" id="det-http">—</div>
-              </div>
-              <div class="server-cell">
-                <div class="server-cell-label">TLS</div>
-                <div class="server-cell-val green" id="det-tls">—</div>
-              </div>
-              <div class="server-cell" style="grid-column:1/-1;">
-                <div class="server-cell-label">Client IP</div>
-                <div class="server-cell-val" id="det-ip">—</div>
-              </div>
-            </div>
-          </div>
-        </div>
+    
+</div>
+</div><!-- /split -->
 
-        <!-- Handshake + Latency meters -->
-        <div class="card animate" style="animation-delay:.18s">
-          <div class="card-head"><span class="card-title">Timing Breakdown</span></div>
-          <div class="card-body">
-            
-            <div class="meter-row">
-              
-              <div class="meter-item">
-                
-                <div class="meter-head">
-                  <span>Lat Min</span>
-                  <span class="meter-head-val" id="meter-min-val">—</span>
-                </div>
-                <div class="meter-track"><div class="meter-fill green" id="meter-min-fill"></div></div>
-              </div>
-              
-              <div class="meter-item">
-                <div class="meter-head">
-                  <span>Lat Max</span>
-                  <span class="meter-head-val" id="meter-max-val">—</span>
-                </div>
-                <div class="meter-track"><div class="meter-fill amber" id="meter-max-fill"></div></div>
-              </div>
-              
-              <div class="meter-item" style="margin-top:10px;">
-                <div class="meter-head">
-                  <span>Handshake Warm</span>
-                  <span class="meter-head-val" id="meter-warm-val">—</span>
-                </div>
-                <div class="meter-track"><div class="meter-fill green" id="meter-warm-fill"></div></div>
-              </div>
-              
-              <div class="meter-item">
-                <div class="meter-head">
-                  <span>Handshake Cold</span>
-                  <span class="meter-head-val" id="meter-cold-val">—</span>
-                </div>
-                <div class="meter-track"><div class="meter-fill" id="meter-cold-fill"></div></div>
-              </div>
-              
-              <div class="meter-legend">
-               <div><span class="lg good"></span> Good</div>
-               <div><span class="lg ok"></span> Moderate</div>
-               <div><span class="lg bad"></span> Problematic</div>
-             </div>
 
-            </div>
-          </div>
-        </div>
+<!-- ── FOOTER ────────────────────────────────────────────── -->
+<footer class="footer">
+  <span class="footer-copy">© 2026 Libreprobe · Data via Cloudflare</span>
+  <div class="footer-links">
+    <a href="/privacy" class="footer-link">Privacy</a>
+    <span class="footer-sep">·</span>
+    <a href="/about" class="footer-link">About</a>
+    <a href="https://github.com" target="_blank" rel="noopener" class="footer-gh" aria-label="GitHub">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+      </svg>
+    </a>
+  </div>
+</footer>
 
-      </div>
 
-      <!-- ROW 4: Analysis + Classification + Run Log -->
-      <div class="section-label">Analysis</div>
-      <div class="row" style="grid-template-columns: 1.5fr 1fr 1.5fr;">
-
-        <!-- Findings -->
-        <div class="card animate" style="animation-delay:.12s">
-          <div class="card-head"><span class="card-title">Findings</span></div>
-          <div class="card-body">
-            <div class="findings" id="findings"></div>
-          </div>
-        </div>
-
-        <!-- Classification -->
-        <div class="card animate" style="animation-delay:.16s">
-          <div class="card-head"><span class="card-title">Classification</span></div>
-          <div class="card-body">
-            <table class="stat-table">
-              <tbody id="classification"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Run history -->
-        <div class="card animate" style="animation-delay:.2s">
-          <div class="card-head">
-            <span class="card-title">Run History</span>
-            <span class="card-badge">session</span>
-          </div>
-          <table class="hist-table">
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>POP</th>
-                <th>Avg Lat</th>
-                <th>Jitter</th>
-                <th>Throughput</th>
-                <th>Rating</th>
-              </tr>
-            </thead>
-            <tbody id="hist-body"></tbody>
-          </table>
-        </div>
-
-      </div>
-    </div><!-- /dashboard -->
-  </div><!-- /main -->
-
-<link rel="stylesheet" href="/assets/css/leaflet.css">
-<script src="/assets/js/map/leaflet.js"></script>
-<script src="/assets/js/echarts.min.js"></script>
-<script type="module" src="/assets/js/app.js"></script>
+<script src="/assets/vendor/leaflet/leaflet.js"></script>
+<script type="module" src="/assets/js/apps/main.js"></script>
 </body>
 </html>
