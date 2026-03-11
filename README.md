@@ -245,6 +245,3 @@ Connection metadata is processed in memory to generate responses and discarded i
 Full policy: https://libreprobe.qzz.io/privacy/
 
 ---
-## License
-
-MIT — see LICENSE
