@@ -5,176 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Libreprobe | Connection Intelligence</title>
   <meta name="description" content="See exactly how you connect to the internet — edge location, protocol, ISP, and more.">
-  
-  <link rel="stylesheet" href="/assets/css/home.entry.css">
-
+  <link rel="stylesheet" href="/assets/vendor/leaflet/leaflet.css">
 </head>
 <body>
 
-
-  
-  <nav class="nav">
-  <a href="/" class="nav-brand">
-    <img src="/assets/graphics/icon.svg"
-         alt="LibreProbe"
-         class="nav-brand-icon" />
-
-    <span class="nav-brand-text">LibreProbe</span>
-    <span class="nav-brand-tag">Beta</span>
-  </a>
-
-  <div class="nav-links">
-    <a href="/throughput" class="nav-link">Throughput</a>
-    <a href="/stability" class="nav-link">Stability</a>
-  </div>
-
-  <a href="https://github.com/grayguava/libreprobe"
-     target="_blank"
-     rel="noopener"
-     class="nav-gh"
-     aria-label="GitHub">
-    <svg viewBox="0 0 24 24">
-<path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>    </svg>
-  </a>
-
-  <button class="nav-hamburger"
-          aria-expanded="false"
-          aria-label="Toggle menu">
-    <span class="nav-hamburger-bar"></span>
-    <span class="nav-hamburger-bar"></span>
-    <span class="nav-hamburger-bar"></span>
-  </button>
-</nav>
-
-<nav class="nav-sidebar" aria-label="Mobile navigation">
-  <div class="nav-sidebar-links">
-    <a href="/throughput/" class="nav-sidebar-link">Throughput</a>
-    <a href="/stability/" class="nav-sidebar-link">Stability</a>
-  </div>
-  <div class="nav-sidebar-divider"></div>
-  <div class="nav-sidebar-quote">
-    <p class="nav-sidebar-quote-text"></p>
-    <span class="nav-sidebar-quote-attr"></span>
-  </div>
-</nav>
-<div class="nav-sidebar-backdrop"></div>
-  
-  
-
-<div class="split">
-
-  <div class="split-left fade-up">
-    
-            <div class="tor-banner" id="tor-banner">
-  <svg class="tor-banner-icon" width="18" height="18" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-    <path d="M256.525143,465.439707 L256.525143,434.406609 C354.826191,434.122748 434.420802,354.364917 434.420802,255.992903 C434.420802,157.627987 354.826191,77.8701558 256.525143,77.5862948 L256.525143,46.5531962 C371.964296,46.8441537 465.446804,140.489882 465.446804,255.992903 C465.446804,371.503022 371.964296,465.155846 256.525143,465.439707 Z M256.525143,356.820314 C311.970283,356.529356 356.8487,311.516106 356.8487,255.992903 C356.8487,200.476798 311.970283,155.463547 256.525143,155.17259 L256.525143,124.146588 C329.115485,124.430449 387.881799,183.338693 387.881799,255.992903 C387.881799,328.654211 329.115485,387.562455 256.525143,387.846316 L256.525143,356.820314 Z M256.525143,201.718689 C286.266674,202.00255 310.3026,226.180407 310.3026,255.992903 C310.3026,285.812497 286.266674,309.990353 256.525143,310.274214 L256.525143,201.718689 Z M0,255.992903 C0,397.384044 114.60886,512 256,512 C397.384044,512 512,397.384044 512,255.992903 C512,114.60886 397.384044,0 256,0 C114.60886,0 0,114.60886 0,255.992903 Z" fill="currentColor"/>
-  </svg>
-  <span>You appear to be connecting via the <strong class="tor">Tor network</strong>.</span>
+<div id="tor-banner" hidden>
+  You appear to be connecting via the <strong>Tor network</strong>.
 </div>
 
-    <div class="hero-label">You're connecting from</div>
-    <div class="hero-ip skeleton" id="hero-ip">&nbsp;</div>
-    <div class="hero-location skeleton" id="hero-location">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-  
-    
-    <p class="hero-sub">Connected — but how stable is it? Run the stability test to find out.</p>
+<p>You're connecting from</p>
+<h1 id="hero-ip">…</h1>
+<p id="hero-location">…</p>
 
-    <div class="hero-status-row">
-      <div class="status-pill">
-        <span class="status-dot" id="hero-status-dot"></span>
-        <span id="hero-status-text">Fetching connection data…</span>
-      </div>
-      <button class="refresh-btn" id="refreshBtn" aria-label="Refresh connection data">
-        <svg class="refresh-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M13.5 8a5.5 5.5 0 1 1-1.4-3.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M12 2v3.5H8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-    </div>
+<p>Connected — but how stable is it? <a href="/stability/">Run the stability test</a> to find out.</p>
 
-    <div class="hero-actions">
-      <a href="/info" class="hero-action-link">View more info <span class="action-arrow">↗</span></a>
-      <span class="hero-action-sep">|</span>
-      <a href="/stability/" class="hero-action-link">Run a stability test <span class="action-arrow">↗</span></a>
-    </div>
-    <div class="hero-facts">
-      <div>
-        <div class="hero-fact-label">Organisation</div>
-        <div class="hero-fact-val skeleton" id="hf-originASOrg">&nbsp;</div>
-      </div>
-      <div>
-        <div class="hero-fact-label">ASN</div>
-        <div class="hero-fact-val skeleton" id="hf-asn">&nbsp;</div>
-      </div>
-      <div>
-        <div class="hero-fact-label">TLS Version</div>
-        <div class="hero-fact-val green skeleton" id="hf-tls">&nbsp;</div>
-      </div>
-      <div>
-        <div class="hero-fact-label">HTTP Version</div>
-        <div class="hero-fact-val green skeleton" id="hf-http">&nbsp;</div>
-      </div>
-    </div>
-  </div>
+<p>
+  <span id="hero-status-dot"></span>
+  <span id="hero-status-text">Fetching connection data…</span>
+  <button id="refreshBtn">Refresh</button>
+</p>
 
+<p>
+  <a href="/info/">View more info</a> |
+  <a href="/stability/">Run a stability test</a>
+</p>
 
-  <div class="split-right fade-up-1">
+<dl>
+  <dt>Organisation</dt><dd id="hf-originASOrg">…</dd>
+  <dt>ASN</dt>         <dd id="hf-asn">…</dd>
+  <dt>TLS Version</dt> <dd id="hf-tls">…</dd>
+  <dt>HTTP Version</dt><dd id="hf-http">…</dd>
+</dl>
 
-    <div class="map-wrap">
-      <div id="map"></div>
-      <div class="map-overlay" id="map-overlay" style="display:none"></div>
-    </div>
+<div style="width:600px;height:300px;overflow:hidden;position:relative;"><div id="map" style="width:100%;height:100%;"></div></div>
 
-    <div class="right-card">
-  <div class="right-card-title">Edge Details</div>
-  <div class="kv-list">
-    <div class="kv-row">
-      <span class="kv-key">PoP Code</span>
-      <span class="kv-val moss skeleton" id="kv-colo">&nbsp;&nbsp;&nbsp;</span>
-    </div>
-    <div class="kv-row">
-      <span class="kv-key">Edge City</span>
-      <span class="kv-val skeleton" id="kv-edge-city">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    </div>
-    <div class="kv-row">
-      <span class="kv-key">Edge Country</span>
-      <span class="kv-val skeleton" id="kv-edge-country">&nbsp;&nbsp;&nbsp;</span>
-    </div>
-    <div class="kv-row">
-      <span class="kv-key">Edge Provider</span>
-      <span class="kv-val">
-        <a href="https://cloudflare.com" target="_blank" rel="noopener" class="kv-provider-link">Cloudflare</a>
-      </span>
-    </div>
-    <div class="kv-row">
-      <span class="kv-key">Ray ID</span>
-      <span class="kv-val dim skeleton" id="kv-ray">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    </div>
-  </div>
-</div>
+<h2>Edge Details</h2>
+<dl>
+  <dt>PoP Code</dt>     <dd id="kv-colo">…</dd>
+  <dt>Edge City</dt>    <dd id="kv-edge-city">…</dd>
+  <dt>Edge Country</dt> <dd id="kv-edge-country">…</dd>
+  <dt>Edge Provider</dt><dd><a href="https://cloudflare.com" target="_blank" rel="noopener">Cloudflare</a></dd>
+  <dt>Ray ID</dt>       <dd id="kv-ray">…</dd>
+</dl>
 
-    
-</div>
-</div><!-- /split -->
-
-
-<footer class="footer">
-  <span class="footer-copy">© 2026 Libreprobe · Powered by Cloudflare Pages</span>
-  <div class="footer-links">
-     <a href="/data-sources" class="footer-link">Data Sources</a>
-    <span class="footer-sep">·</span>
-    <a href="/privacy" class="footer-link">Privacy</a>
-    <span class="footer-sep">·</span>
-    <a href="/about" class="footer-link">About</a>
-    <a href="https://github.com/grayguava/libreprobe" target="_blank" rel="noopener" class="footer-gh" aria-label="GitHub">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
-      </svg>
-    </a>
-  </div>
-</footer>
-
-<script type="module" src="assets/js/ui/navigation.js"></script>
 <script src="/assets/vendor/leaflet/leaflet.js"></script>
 <script type="module" src="/assets/js/apps/connectionInfoRenderer.js"></script>
 </body>

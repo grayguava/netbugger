@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Libreprobe | Stability</title>
+  <script src="/assets/vendor/echarts/echarts.min.js"></script>
+</head>
+<body>
+
+<h1>Network Diagnostics</h1>
+<button id="runBtn">
+  <span id="runDot"></span>
+  <span id="runLabel">Run Test</span>
+</button>
+
+<!-- Hero states -->
+<div id="heroIdle">
+  <h2>How stable is your connection?</h2>
+  <p>Measures connection stability — latency and jitter — from your browser to our edge server. Runs 100 probes at 100ms intervals.</p>
+</div>
+
+<div id="heroRunning" hidden>
+  <p>Measuring…</p>
+  <progress id="heroFill"></progress>
+  <p id="heroRunSub">Collecting samples</p>
+</div>
+
+<div id="heroResult" hidden>
+  <p id="heroVerdictLabel"></p>
+  <h2 id="heroHeadline"></h2>
+  <p id="heroConsequence"></p>
+  <div id="heroUsecases"></div>
+</div>
+
+<!-- Status -->
+<p>
+  <span id="statusDot"></span>
+  <span id="statusText">Ready</span>
+</p>
+
+<!-- Advanced toggle -->
+<div id="advancedToggle" hidden>
+  <button id="advancedBtn" aria-expanded="false">Advanced ▾</button>
+</div>
+
+<div id="advancedPanel">
+  <section id="verdict">
+    <div id="verdictList"></div>
+  </section>
+
+  <h3>Raw Numbers</h3>
+  <dl>
+    <dt>Median RTT</dt> <dd id="val-median">—</dd>
+    <dt>p90 RTT</dt>    <dd id="val-p90">—</dd>
+    <dt>Samples</dt>    <dd id="val-samples">—</dd>
+    <dt>Min RTT</dt>    <dd id="val-min">—</dd>
+    <dt>Max RTT</dt>    <dd id="val-max">—</dd>
+    <dt>Jitter (σ)</dt> <dd id="val-jitter">—</dd>
+  </dl>
+
+  <h3>Handshake</h3>
+  <dl>
+    <dt>Cold start <small id="meta-cold">DNS + TCP + TLS</small></dt>     <dd id="val-cold">—</dd>
+    <dt>Warm <small id="meta-warm">6 warm-up probes · 50ms</small></dt>   <dd id="val-warm">—</dd>
+    <dt>Cold − Warm overhead</dt>                                          <dd id="val-delta">—</dd>
+  </dl>
+</div>
+
+<!-- Charts -->
+<h2>Live RTT <span id="liveTag">idle</span></h2>
+<p id="liveIdle">Run a test to see live data</p>
+<div id="liveChart" style="width:100%;height:300px;"></div>
+
+<h2>Jitter / Stability <span id="distTag">idle</span></h2>
+<p id="distIdle">Available after test completes</p>
+<div id="distChart" style="width:100%;height:300px;"></div>
+
+<script type="module">
+  import { init } from "/assets/js/apps/getStability.js";
+  init();
+</script>
+</body>
+</html>

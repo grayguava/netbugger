@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LibreProbe | Throughput</title>
+  <script src="/assets/vendor/echarts/echarts.min.js"></script>
+</head>
+<body>
+
+<h1>Throughput</h1>
+<div>
+  <button id="exportBtn" hidden>Export Results</button>
+  <button id="runBtn">
+    <span id="runDot"></span>
+    <span id="runLabel">Run Test</span>
+  </button>
+</div>
+
+<!-- Hero states -->
+<div id="heroIdle">
+  <h2>Sustained download capacity.</h2>
+  <p>Parallel streams, chunk-event bucketing, adaptive duration. Real throughput — not burst speed.</p>
+</div>
+
+<div id="heroRunning" hidden>
+  <p>Measuring…</p>
+  <progress></progress>
+  <p id="heroRunningLive">Starting streams…</p>
+</div>
+
+<div id="heroResult" hidden>
+  <p id="heroVerdictLabel"></p>
+  <p>
+    <strong id="heroSpeedMBps">—</strong> MB/s &nbsp;/&nbsp;
+    <strong id="heroSpeedMbps">—</strong> Mbps
+  </p>
+  <h2 id="heroHeadline"></h2>
+  <p id="heroConsequence"></p>
+  <div id="heroUsecases"></div>
+</div>
+
+<div id="heroLimitMsg" hidden></div>
+
+<!-- Status -->
+<p>
+  <span id="statusDot"></span>
+  <span id="statusText">Ready to test</span>
+</p>
+
+<!-- Advanced toggle -->
+<div id="advancedToggle" hidden>
+  <button id="advancedBtn" aria-expanded="false">Advanced ▾</button>
+</div>
+
+<div id="advancedPanel">
+  <section id="findingsSection">
+    <div id="findingsList"></div>
+  </section>
+
+  <h3>Speed</h3>
+  <dl>
+    <dt>Sustained <small>p75 post-ramp</small></dt>   <dd id="val-sustained">—</dd>
+    <dt>Peak <small>p95 all samples</small></dt>       <dd id="val-peak">—</dd>
+    <dt>P99 <small>near-max excl. outlier</small></dt> <dd id="val-p99">—</dd>
+    <dt>Average <small>mean incl. ramp</small></dt>    <dd id="val-average">—</dd>
+  </dl>
+
+  <h3>Consistency</h3>
+  <dl>
+    <dt>Variance (overall)</dt>   <dd id="val-variance">—</dd>
+    <dt>Variance (post-ramp)</dt> <dd id="val-variance-post">—</dd>
+    <dt>Ramp time</dt>            <dd id="val-ramp">—</dd>
+    <dt>Still ramping at end</dt> <dd id="val-still-ramping">—</dd>
+  </dl>
+
+  <h3>Transfer</h3>
+  <dl>
+    <dt>Transferred</dt> <dd id="val-bytes">—</dd>
+    <dt>Duration</dt>    <dd id="val-duration">—</dd>
+    <dt>Streams</dt>     <dd id="val-streams">—</dd>
+    <dt>Samples</dt>     <dd id="val-samples">—</dd>
+  </dl>
+</div>
+
+<!-- Charts -->
+<h2>Download speed over time <span id="chartTag">—</span></h2>
+<p id="chartIdle">Run a test to see results</p>
+<div id="speedChart" style="width:100%;height:300px;"></div>
+
+<h2>Edge Server <span id="serverInfoStatus">—</span></h2>
+<p id="serverInfoLoading">Fetching connection info…</p>
+<dl id="serverInfoContent" hidden>
+  <dt>POP</dt>      <dd id="si-pop">—</dd>
+  <dt>City</dt>     <dd id="si-city">—</dd>
+  <dt>Country</dt>  <dd id="si-country">—</dd>
+  <dt>Provider</dt> <dd id="si-provider">—</dd>
+  <dt>Ray ID</dt>   <dd id="si-ray">—</dd>
+</dl>
+
+<script type="module">
+  import { mountThroughputApp }  from "/assets/js/apps/getThroughput.js";
+  import { interpretThroughput } from "/assets/js/measurement/shared/interpretThroughput.js";
+  mountThroughputApp({ interpretThroughput, echarts: window.echarts });
+</script>
+</body>
+</html>

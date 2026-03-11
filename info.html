@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LibreProbe | Connection Info</title>
+</head>
+<body>
+
+<div id="tor-banner" hidden>
+  You appear to be connecting via the <strong>Tor network</strong>.
+  Location and device details reflect the exit node, not your actual origin.
+</div>
+
+<div id="error-banner" hidden>
+  Failed to load connection info
+</div>
+
+<p>
+  <span id="hero-status-dot"></span>
+  <span id="hero-status-text">Loading…</span>
+  <button id="refreshBtn">Refresh</button>
+</p>
+
+<p>You're connecting from</p>
+<h1 id="hero-ip">000.000.000.000</h1>
+<p id="hero-location">Loading…</p>
+
+<h2>Your Device</h2>
+<dl>
+  <dt>IP Address</dt> <dd id="cl-ip">—</dd>
+  <dt>City</dt>       <dd id="cl-city">—</dd>
+  <dt>Region</dt>     <dd id="cl-region">—</dd>
+  <dt>Country</dt>    <dd id="cl-country">—</dd>
+  <dt>Continent</dt>  <dd id="cl-continent">—</dd>
+  <dt>Timezone</dt>   <dd id="cl-timezone">—</dd>
+</dl>
+
+<h2>Network</h2>
+<dl>
+  <dt>Organisation</dt> <dd id="net-originASOrg">—</dd>
+  <dt>ASN</dt>          <dd><a id="net-asn" target="_blank" rel="noopener">—</a></dd>
+  <dt>TLS Version</dt>  <dd id="proto-tls-badge">—</dd>
+  <dt>HTTP Version</dt> <dd id="proto-http-badge">—</dd>
+</dl>
+
+<h2>Serving Edge</h2>
+<dl>
+  <dt>POP</dt>          <dd id="edge-colo">—</dd>
+  <dt>City</dt>         <dd id="edge-city">—</dd>
+  <dt>Country</dt>      <dd id="edge-country">—</dd>
+  <dt>Country Code</dt> <dd id="edge-country-code">—</dd>
+  <dt>Provider</dt>     <dd>Cloudflare</dd>
+  <dt>Ray ID</dt>       <dd id="edge-ray">—</dd>
+</dl>
+
+<p>
+  Location data is derived from IP geolocation and may not reflect your physical location
+  accurately — particularly for VPN, proxy, or mobile users. ASN and organisation info is based on
+  routing data and is generally reliable. Ray ID and edge details are exact.
+</p>
+
+<script type="module" src="/assets/js/apps/connectionInfoRenderer.js"></script>
+</body>
+</html>
