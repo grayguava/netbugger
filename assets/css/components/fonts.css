@@ -1,0 +1,39 @@
+
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('../../fonts/SpaceGrotesk-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('../../fonts/IBMPlexMono-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('../../fonts/GeistMono-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Silkscreen';
+  src: url('../../fonts/Silkscreen-Regular.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --serif:    'IBM Plex Mono', 'Fira Code', monospace;
+  --mono:     'Geist Mono', 'Fira Code', monospace;
+  --sans:     'Space Grotesk', system-ui, sans-serif;
+  --logofont: 'Silkscreen', monospace;
+}

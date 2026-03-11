@@ -1,399 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Connection Info — Libreprobe</title>
-  <meta name="description" content="Detailed breakdown of your connection — IP, ISP, edge location, protocol, and routing.">
-  <link rel="stylesheet" href="/assets/css/fonts.css">
-  <link rel="stylesheet" href="/assets/css/nav.css">
-  <link rel="stylesheet" href="/assets/css/info.css">
-  <link rel="stylesheet" href="/assets/css/footer.css">
+  <title>LibreProbe | Connection Info</title>
+  <link rel="icon" href="/assets/graphics/icon.svg">
+  <link rel="stylesheet" href="/assets/css/info.entry.css">
 </head>
 <body>
 
-<!-- ── NAV ─────────────────────────────────────────────── -->
-<nav class="nav">
+
+  <nav class="nav">
   <a href="/" class="nav-brand">
-    <div class="nav-brand-mark">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <circle cx="8" cy="8" r="2" fill="#e8e4de"/>
-        <path d="M4.5 11.5a5 5 0 0 1 0-7" stroke="#5a7a4e" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M11.5 4.5a5 5 0 0 1 0 7" stroke="#5a7a4e" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M2.5 13.5a8 8 0 0 1 0-11" stroke="#3a5234" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M13.5 2.5a8 8 0 0 1 0 11" stroke="#3a5234" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <span class="nav-brand-name">Libreprobe</span>
+    <img src="/assets/graphics/icon.svg"
+         alt="LibreProbe"
+         class="nav-brand-icon" />
+
+    <span class="nav-brand-text">LibreProbe</span>
     <span class="nav-brand-tag">Beta</span>
   </a>
+
   <div class="nav-links">
-    <a href="/"       class="nav-link">Home</a>
-    <a href="/health" class="nav-link">Health</a>
-    <a href="/about"  class="nav-link">About</a>
-    <a href="https://github.com" target="_blank" rel="noopener" class="nav-gh" aria-label="GitHub">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
-      </svg>
-    </a>
+    <a href="/throughput" class="nav-link">Throughput</a>
+    <a href="/stability" class="nav-link">Stability</a>
   </div>
+
+  <a href="https://github.com/grayguava/libreprobe"
+     target="_blank"
+     rel="noopener"
+     class="nav-gh"
+     aria-label="GitHub">
+    <svg viewBox="0 0 24 24">
+<path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>    </svg>
+  </a>
+
+  <button class="nav-hamburger"
+          aria-expanded="false"
+          aria-label="Toggle menu">
+    <span class="nav-hamburger-bar"></span>
+    <span class="nav-hamburger-bar"></span>
+    <span class="nav-hamburger-bar"></span>
+  </button>
 </nav>
 
+<nav class="nav-sidebar" aria-label="Mobile navigation">
+  <div class="nav-sidebar-links">
+    <a href="/throughput/" class="nav-sidebar-link">Throughput</a>
+    <a href="/stability/" class="nav-sidebar-link">Stability</a>
+  </div>
+  <div class="nav-sidebar-divider"></div>
+  <div class="nav-sidebar-quote">
+    <p class="nav-sidebar-quote-text"></p>
+    <span class="nav-sidebar-quote-attr"></span>
+  </div>
+</nav>
+<div class="nav-sidebar-backdrop"></div>
 
-<!-- ── PAGE ─────────────────────────────────────────────── -->
-<main class="info-page">
 
-  <!-- ── Page header ──────────────────────────────────── -->
-  <header class="page-header fade-up">
-    <div class="page-eyebrow">Connection Info</div>
-    <div class="page-title-row">
-      <h1 class="page-title">
-        <span id="hdr-ip" class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-      </h1>
-      <div class="header-meta">
-        <div class="status-pill">
-          <span class="status-dot" id="status-dot"></span>
-          <span id="status-text">Fetching…</span>
-        </div>
-        <button class="refresh-btn" id="refreshBtn" aria-label="Refresh">
-          <svg class="refresh-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M13.5 8a5.5 5.5 0 1 1-1.4-3.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M12 2v3.5H8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
+<div class="info-page fade-up">
+
+  <div class="info-topbar">
+    <div class="info-eyebrow">
+      <span class="info-eyebrow-line"></span>
+      Connection Info
+    </div>
+    <div class="info-topbar-right">
+      <div class="status-pill">
+        <span id="hero-status-dot" class="status-dot"></span>
+        <span id="hero-status-text">Loading…</span>
       </div>
+      <button id="refreshBtn" class="refresh-btn" aria-label="Refresh">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13.5 8a5.5 5.5 0 1 1-1.06-3.28"/>
+          <polyline points="13.5 2 13.5 5.5 10 5.5"/>
+        </svg>
+      </button>
     </div>
-    <div class="page-ray-row">
-      <span class="page-ray-label">Ray ID</span>
-      <span id="hdr-ray" class="page-ray-val skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    </div>
-  </header>
-
-  <!-- Error banner -->
-  <div class="error-banner" id="error-banner">
-    <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-      <circle cx="8" cy="8" r="7" stroke="#c87070" stroke-width="1.5"/>
-      <path d="M8 5v4M8 11v.5" stroke="#c87070" stroke-width="1.5" stroke-linecap="round"/>
-    </svg>
-    Failed to load connection data. The API may be unreachable.
   </div>
 
 
-  <!-- ── Path diagram ──────────────────────────────────── -->
-  <div class="path-diagram fade-up-1">
+  <div class="tor-banner" id="tor-banner">
+  <svg class="tor-banner-icon" width="18" height="18" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+    <path d="M256.525143,465.439707 L256.525143,434.406609 C354.826191,434.122748 434.420802,354.364917 434.420802,255.992903 C434.420802,157.627987 354.826191,77.8701558 256.525143,77.5862948 L256.525143,46.5531962 C371.964296,46.8441537 465.446804,140.489882 465.446804,255.992903 C465.446804,371.503022 371.964296,465.155846 256.525143,465.439707 Z M256.525143,356.820314 C311.970283,356.529356 356.8487,311.516106 356.8487,255.992903 C356.8487,200.476798 311.970283,155.463547 256.525143,155.17259 L256.525143,124.146588 C329.115485,124.430449 387.881799,183.338693 387.881799,255.992903 C387.881799,328.654211 329.115485,387.562455 256.525143,387.846316 L256.525143,356.820314 Z M256.525143,201.718689 C286.266674,202.00255 310.3026,226.180407 310.3026,255.992903 C310.3026,285.812497 286.266674,309.990353 256.525143,310.274214 L256.525143,201.718689 Z M0,255.992903 C0,397.384044 114.60886,512 256,512 C397.384044,512 512,397.384044 512,255.992903 C512,114.60886 397.384044,0 256,0 C114.60886,0 0,114.60886 0,255.992903 Z" fill="currentColor"/>
+  </svg>
+  <span>You appear to be connecting via the <strong class="tor">Tor network</strong>. Location and device details reflect the exit node, not your actual origin.</span>
+</div>
+  
+  
+  <div id="error-banner" class="error-banner">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+      <circle cx="8" cy="8" r="6.5"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/>
+    </svg>
+    Failed to load connection info
+  </div>
 
-    <!-- Left node: You -->
-    <div class="path-node path-node--client">
-      <div class="path-node-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
+  <div class="info-hero">
+    <div class="info-hero-label">You're connecting from</div>
+    <div id="hero-ip" class="info-hero-ip skeleton">000.000.000.000</div>
+    <div id="hero-location" class="info-hero-location skeleton">Loading…</div>
+  </div>
+
+  <div class="info-cols fade-up-1">
+
+    <!-- Col 1: Your Device -->
+    <div class="info-col">
+      <div class="info-col-heading">
+        <div class="info-col-icon">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <rect x="1.5" y="3" width="13" height="9" rx="1.5"/>
+            <line x1="5" y1="14" x2="11" y2="14"/>
+            <line x1="8" y1="12" x2="8" y2="14"/>
+          </svg>
+        </div>
+        Your Device
       </div>
-      <div class="path-node-label">Your Device</div>
-      <div class="path-node-name" id="path-client-city"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
-      <div class="path-node-sub"  id="path-client-loc"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
-      <div class="path-node-ip"   id="path-client-ip"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
-    </div>
-
-    <!-- Track: dots only, no arrows -->
-    <div class="path-track" aria-hidden="true">
-      <div class="path-track-dot"></div>
-      <div class="path-track-line"></div>
-      <div class="path-track-dot"></div>
-      <div class="path-track-line"></div>
-      <div class="path-track-dot"></div>
-    </div>
-
-    <!-- Right node: Cloudflare Edge (rich info) -->
-    <div class="path-node path-node--cf">
-      <div class="path-node-icon path-node-icon--accent">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path d="M12 2a10 10 0 1 1 0 20A10 10 0 0 1 12 2z" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M2 12h20M12 2c-2.76 3.5-4 7-4 10s1.24 6.5 4 10M12 2c2.76 3.5 4 7 4 10s-1.24 6.5-4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <div class="path-node-label">Serving Edge</div>
-      <div class="path-edge-kv">
-        <div class="path-edge-row">
-          <span class="path-edge-key">Provider</span>
-          <span class="path-edge-val">Cloudflare</span>
-        </div>
-        <div class="path-edge-row">
-          <span class="path-edge-key">PoP</span>
-          <span class="path-edge-val accent" id="path-pop"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
-        </div>
-        <div class="path-edge-row">
-          <span class="path-edge-key">City</span>
-          <span class="path-edge-val" id="path-edge-city"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
-        </div>
-        <div class="path-edge-row">
-          <span class="path-edge-key">Ray ID</span>
-          <span class="path-edge-val dim" id="path-ray"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
-        </div>
+      <div class="info-col-rows">
+        <div class="info-col-row"><span class="info-col-key">IP Address</span><span id="cl-ip"        class="info-col-val accent skeleton">—</span></div>
+        <div class="info-col-row"><span class="info-col-key">City</span>      <span id="cl-city"      class="info-col-val skeleton">—</span></div>
+        <div class="info-col-row"><span class="info-col-key">Region</span>    <span id="cl-region"    class="info-col-val skeleton">—</span></div>
+        <div class="info-col-row"><span class="info-col-key">Country</span>   <span id="cl-country"   class="info-col-val skeleton">—</span></div>
+        <div class="info-col-row"><span class="info-col-key">Continent</span> <span id="cl-continent" class="info-col-val dim skeleton">—</span></div>
+        <div class="info-col-row"><span class="info-col-key">Timezone</span>  <span id="cl-timezone"  class="info-col-val dim skeleton">—</span></div>
       </div>
     </div>
 
-  </div><!-- /path-diagram -->
-
-
-  <!-- ── 3 cards ───────────────────────────────────────── -->
-  <div class="cards-row fade-up-2">
-
-    <!-- Card 1: Client -->
-    <div class="info-card">
-      <div class="info-card-header">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M4 20c0-4 3.58-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-        Client
-      </div>
-      <div class="info-rows">
-        <div class="info-row">
-          <span class="info-key">IP</span>
-          <span class="info-val accent" id="cl-ip"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
+    <div class="info-col">
+      <div class="info-col-heading">
+        <div class="info-col-icon">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <circle cx="8" cy="8" r="6.5"/>
+            <ellipse cx="8" cy="8" rx="2.8" ry="6.5"/>
+            <line x1="1.5" y1="8" x2="14.5" y2="8"/>
+          </svg>
         </div>
-        <div class="info-row">
-          <span class="info-key">City</span>
-          <span class="info-val" id="cl-city"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
-        </div>
-        <div class="info-row">
-          <span class="info-key">Region</span>
-          <span class="info-val" id="cl-region"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
-        </div>
-        <div class="info-row">
-          <span class="info-key">Country</span>
-          <span class="info-val" id="cl-country"><span class="skeleton">&nbsp;&nbsp;&nbsp;</span></span>
-        </div>
-        <div class="info-row">
-          <span class="info-key">Continent</span>
-          <span class="info-val dim" id="cl-continent"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
-        </div>
-        <div class="info-row">
-          <span class="info-key">Timezone</span>
-          <span class="info-val dim" id="cl-timezone"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
-        </div>
-        <div class="info-row">
-          <span class="info-key">Coords</span>
-          <span class="info-val dim" id="cl-coords"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 2: Network -->
-    <div class="info-card">
-      <div class="info-card-header">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-          <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-          <path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
         Network
       </div>
-      <div class="info-rows">
-        <div class="info-row">
-          <span class="info-key">ISP</span>
-          <span class="info-val" id="net-isp"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
-        </div>
-        <div class="info-row">
-          <span class="info-key">ASN</span>
-          <span class="info-val accent" id="net-asn"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
-        </div>
-        <div class="info-row">
-          <span class="info-key">Protocol</span>
-          <span class="info-val" id="proto-tls-badge"></span>
-        </div>
-        <div class="info-row">
-          <span class="info-key">HTTP Version</span>
-          <span class="info-val" id="proto-http-badge"></span>
-        </div>
+      <div class="info-col-rows">
+        <div class="info-col-row"><span class="info-col-key">Organisation</span><span id="net-originASOrg"  class="info-col-val skeleton">—</span></div>
+        <div class="info-col-row"><span class="info-col-key">ASN</span>          <a id="net-asn" class="info-col-val info-col-val--link dim skeleton" target="_blank" rel="noopener">—<svg class="asn-arrow" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="8" x2="8" y2="2"/><polyline points="4,2 8,2 8,6"/></svg></a></div>
+        <div class="info-col-row"><span class="info-col-key">TLS Version</span>  <span id="proto-tls-badge"  class="info-col-val skeleton">—</span></div>
+        <div class="info-col-row"><span class="info-col-key">HTTP Version</span> <span id="proto-http-badge" class="info-col-val skeleton">—</span></div>
       </div>
     </div>
 
-    <!-- Card 3: Edge -->
-    <div class="info-card">
-      <div class="info-card-header">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-          <path d="M12 2a10 10 0 1 1 0 20A10 10 0 0 1 12 2z" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M2 12h20M12 2c-2.76 3.5-4 7-4 10s1.24 6.5 4 10M12 2c2.76 3.5 4 7 4 10s-1.24 6.5-4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-        Edge
+    <div class="info-col">
+      <div class="info-col-heading">
+        <div class="info-col-icon">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <rect x="1.5" y="2" width="13" height="4" rx="1"/>
+            <rect x="1.5" y="10" width="13" height="4" rx="1"/>
+            <line x1="4.5" y1="4" x2="4.5" y2="4.01"/>
+            <line x1="4.5" y1="12" x2="4.5" y2="12.01"/>
+          </svg>
+        </div>
+        Serving Edge
       </div>
-      <div class="info-rows">
-        <div class="info-row">
-          <span class="info-key">PoP</span>
-          <span class="info-val accent" id="edge-colo"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
-        </div>
-        <div class="info-row">
-          <span class="info-key">City</span>
-          <span class="info-val" id="edge-city"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
-        </div>
-        <div class="info-row">
-          <span class="info-key">Country</span>
-          <span class="info-val" id="edge-country"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
-        </div>
-        <div class="info-row">
-          <span class="info-key">Country Code</span>
-          <span class="info-val dim" id="edge-country-code"><span class="skeleton">&nbsp;&nbsp;&nbsp;</span></span>
-        </div>
-        <div class="info-row info-row--divider"></div>
-        <div class="info-row info-row--ray">
-          <span class="info-key">Ray ID</span>
-          <span class="info-val info-val--ray" id="edge-ray"><span class="skeleton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
-        </div>
+      <div class="info-col-rows">
+        <div class="info-col-row"><span class="info-col-key">POP</span>          <span id="edge-colo"         class="info-col-val accent skeleton">—</span></div>
+        <div class="info-col-row"><span class="info-col-key">City</span>          <span id="edge-city"         class="info-col-val skeleton">—</span></div>
+        <div class="info-col-row"><span class="info-col-key">Country</span>       <span id="edge-country"      class="info-col-val skeleton">—</span></div>
+        <div class="info-col-row"><span class="info-col-key">Country Code</span>  <span id="edge-country-code" class="info-col-val dim skeleton">—</span></div>
+        <div class="info-col-row"><span class="info-col-key">Provider</span>      <span class="info-col-val">Cloudflare</span></div>
+        <div class="info-col-row"><span class="info-col-key">Ray ID</span>        <span id="edge-ray"          class="info-col-val dim skeleton">—</span></div>
       </div>
     </div>
 
-  </div><!-- /cards-row -->
+  </div><!-- /.info-cols -->
 
-</main>
+  <p class="info-disclaimer fade-up-2">
+    Location data is derived from IP geolocation and may not reflect your physical location
+    accurately — particularly for VPN, proxy, or mobile users. ASN and organisation info is based on
+    routing data and is generally reliable. Ray ID and edge details are exact.
+  </p>
+
+</div><!-- /.info-page -->
 
 
-<!-- ── FOOTER ────────────────────────────────────────────── -->
 <footer class="footer">
-  <span class="footer-copy">© 2026 Libreprobe · Data via Cloudflare</span>
+  <span class="footer-copy">© 2026 Libreprobe · Powered by Cloudflare Pages</span>
   <div class="footer-links">
+    <a href="/data-sources" class="footer-link">Data Sources</a>
+    <span class="footer-sep">·</span>
     <a href="/privacy" class="footer-link">Privacy</a>
     <span class="footer-sep">·</span>
     <a href="/about" class="footer-link">About</a>
-    <a href="https://github.com" target="_blank" rel="noopener" class="footer-gh" aria-label="GitHub">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
-      </svg>
+    <a href="https://github.com/grayguava/libreprobe" target="_blank" rel="noopener" class="footer-gh" aria-label="GitHub">
+      <svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
     </a>
   </div>
 </footer>
 
-
-<script type="module">
-import { getConnectionInfo } from '/assets/js/measurement/environment/getConnectionInfo.js';
-
-const $ = id => document.getElementById(id);
-const fallback = v => (v != null && v !== '') ? v : '—';
-const fmt = (lat, lon) => {
-  const lt = parseFloat(lat), ln = parseFloat(lon);
-  if (isNaN(lt) || isNaN(ln)) return '—';
-  return `${Math.abs(lt).toFixed(4)}°\u202f${lt >= 0 ? 'N' : 'S'}, ${Math.abs(ln).toFixed(4)}°\u202f${ln >= 0 ? 'E' : 'W'}`;
-};
-
-function set(id, html, asText = false) {
-  const el = $(id);
-  if (!el) return;
-  el.classList.remove('skeleton');
-  asText ? (el.textContent = html) : (el.innerHTML = html);
-}
-
-function makeBadge(text) {
-  if (!text || text === '—') return '—';
-  const isWarn = text.includes('1.0') || text.includes('1.1') || text.includes('1.2');
-  return `<span class="proto-badge${isWarn ? ' warn' : ''}">${text}</span>`;
-}
-
-function formatRayId(ray) {
-  if (!ray || ray === '—') return ray;
-  const parts = ray.split('-');
-  if (parts.length < 2) return `<em>${ray}</em>`;
-  return `${parts.slice(0, -1).join('-')}-<em>${parts[parts.length - 1]}</em>`;
-}
-
-const ALL_IDS = [
-  'hdr-ip', 'hdr-ray',
-  'path-client-city', 'path-client-loc', 'path-client-ip',
-  'path-pop', 'path-edge-city', 'path-ray',
-  'cl-ip', 'cl-city', 'cl-region', 'cl-country', 'cl-continent', 'cl-timezone', 'cl-coords',
-  'net-isp', 'net-asn', 'proto-tls-val', 'proto-http-val',
-  'edge-colo', 'edge-city', 'edge-country', 'edge-country-code', 'edge-coords', 'edge-ray',
-];
-
-async function load() {
-  let info;
-  try {
-    info = await getConnectionInfo('/api/info');
-  } catch (e) {
-    info = { error: true };
-  }
-
-  if (info.error) {
-    $('error-banner').classList.add('visible');
-    $('status-dot').classList.add('err');
-    set('status-text', 'Failed to fetch', true);
-    ALL_IDS.forEach(id => set(id, '—', true));
-    return;
-  }
-
-  const ip           = fallback(info.clientIp);
-  const city         = fallback(info.clientCity);
-  const region       = fallback(info.clientRegion);
-  const country      = fallback(info.clientCountry);
-  const continent    = fallback(info.clientContinent);
-  const tz           = fallback(info.clientTimezone);
-  const clCoords     = fmt(info.clientLat, info.clientLon);
-  const isp          = fallback(info.isp);
-  const asn          = info.asn ? `AS${info.asn}` : '—';
-  const tls          = fallback(info.tls);
-  const http         = fallback(info.http);
-  const colo         = fallback(info.colo);
-  const edgeCity     = fallback(info.edgeCity);
-  const edgeCountry  = fallback(info.edgeCountry);
-  const edgeCtryCode = fallback(info.edgeCountryCode);
-  const edgeCoords   = fmt(info.edgeLat, info.edgeLon);
-  const ray          = fallback(info.rayId);
-
-  /* Header */
-  set('hdr-ip',   ip,  true);
-  set('hdr-ray',  ray, true);
-  $('status-dot').classList.add('ok');
-  set('status-text', `Connected · ${colo !== '—' ? colo : '—'}`, true);
-
-  /* Path diagram */
-  set('path-client-city', city, true);
-  set('path-client-loc',  [region !== '—' ? region : null, country].filter(Boolean).join(', '), true);
-  set('path-client-ip',   ip, true);
-  set('path-pop',         colo, true);
-  set('path-edge-city',   edgeCity, true);
-  set('path-ray',         ray, true);
-
-  /* Card 1 – Client */
-  set('cl-ip',        ip,        true);
-  set('cl-city',      city,      true);
-  set('cl-region',    region,    true);
-  set('cl-country',   country,   true);
-  set('cl-continent', continent, true);
-  set('cl-timezone',  tz,        true);
-  set('cl-coords',    clCoords,  true);
-
-  /* Card 2 – Network */
-  set('net-isp',         isp,  true);
-  set('net-asn',         asn,  true);
-  set('proto-tls-val',   tls,  true);
-  set('proto-http-val',  http, true);
-  set('proto-tls-badge',  makeBadge(tls));
-  set('proto-http-badge', makeBadge(http));
-
-  /* Card 3 – Edge */
-  set('edge-colo',         colo,        true);
-  set('edge-city',         edgeCity,    true);
-  set('edge-country',      edgeCountry, true);
-  set('edge-country-code', edgeCtryCode,true);
-  set('edge-coords',       edgeCoords,  true);
-  set('edge-ray',          formatRayId(ray));
-}
-
-load();
-
-const refreshBtn = document.getElementById('refreshBtn');
-if (refreshBtn) {
-  let refreshing = false;
-  refreshBtn.addEventListener('click', async () => {
-    if (refreshing) return;
-    refreshing = true;
-    refreshBtn.classList.add('spinning');
-    await load();
-    refreshBtn.classList.remove('spinning');
-    refreshing = false;
-  });
-}
-</script>
+<script type="module" src="/assets/js/ui/navigation.js"></script>
+<script type="module" src="/assets/js/apps/connectionInfoRenderer.js"></script>
 
 </body>
 </html>

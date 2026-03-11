@@ -41,7 +41,6 @@ export async function onRequestGet({ params, request }) {
         sent += size;
       }
     } catch (err) {
-      // Ignore client abort errors
     }
 
     try {

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Libreprobe | Stability</title>
+  <link rel="stylesheet" href="/assets/css/stability.entry.css" />
+  <script src="/assets/vendor/echarts/echarts.min.js"></script>
+</head>
+<body>
+
+
+  
+  <nav class="nav">
+  <a href="/" class="nav-brand">
+    <img src="/assets/graphics/icon.svg"
+         alt="LibreProbe"
+         class="nav-brand-icon" />
+
+    <span class="nav-brand-text">LibreProbe</span>
+    <span class="nav-brand-tag">Beta</span>
+  </a>
+
+  <div class="nav-links">
+    <a href="/throughput" class="nav-link">Throughput</a>
+    <a href="/stability" class="nav-link">Stability</a>
+  </div>
+
+  <a href="https://github.com/grayguava/libreprobe"
+     target="_blank"
+     rel="noopener"
+     class="nav-gh"
+     aria-label="GitHub">
+    <svg viewBox="0 0 24 24">
+<path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>    </svg>
+  </a>
+
+  <button class="nav-hamburger"
+          aria-expanded="false"
+          aria-label="Toggle menu">
+    <span class="nav-hamburger-bar"></span>
+    <span class="nav-hamburger-bar"></span>
+    <span class="nav-hamburger-bar"></span>
+  </button>
+</nav>
+
+<nav class="nav-sidebar" aria-label="Mobile navigation">
+  <div class="nav-sidebar-links">
+    <a href="/throughput/" class="nav-sidebar-link">Throughput</a>
+    <a href="/stability/" class="nav-sidebar-link">Stability</a>
+  </div>
+  <div class="nav-sidebar-divider"></div>
+  <div class="nav-sidebar-quote">
+    <p class="nav-sidebar-quote-text"></p>
+    <span class="nav-sidebar-quote-attr"></span>
+  </div>
+</nav>
+<div class="nav-sidebar-backdrop"></div>
+
+
+
+  <div class="lat-grid">
+
+
+    <div class="lat-left fade-up">
+
+
+      <div class="lat-topbar">
+      <div class="lat-eyebrow">
+        <span class="lat-eyebrow-line"></span>
+        Network Diagnostics
+      </div>
+      <div class="lat-topbar-actions">
+<button class="run-btn" id="runBtn">
+          <span class="run-btn-dot" id="runDot"></span>
+          <span id="runLabel">Run Test</span>
+        </button>
+      </div>
+    </div>
+
+
+      <div class="lat-hero">
+
+      <!-- idle state -->
+      <div class="hero-idle" id="heroIdle">
+        <h1 class="hero-idle-title">How stable is<br>your connection?</h1>
+        <p class="hero-idle-sub">Measures connection stability — latency and jitter — from your browser to our edge server. Runs 100 probes at 100ms intervals. Duration depends on your connection speed.</p>
+      </div>
+
+
+      <div class="hero-running" id="heroRunning" hidden>
+        <div class="hero-running-label">Measuring…</div>
+        <div class="hero-running-bar"><div class="hero-running-fill" id="heroFill"></div></div>
+        <div class="hero-running-sub" id="heroRunSub">Collecting samples</div>
+      </div>
+
+      <div class="hero-result" id="heroResult" hidden>
+        <div class="hero-verdict-label" id="heroVerdictLabel"></div>
+        <h2 class="hero-headline" id="heroHeadline"></h2>
+        <p class="hero-consequence" id="heroConsequence"></p>
+        <div class="hero-usecases" id="heroUsecases"></div>
+      </div>
+
+    </div>
+
+    <div class="lat-status">
+      <div class="status-pill">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">Ready</span>
+      </div>
+    </div>
+
+    <div id="advancedToggle" class="advanced-toggle" hidden>
+      <button id="advancedBtn" class="advanced-btn" aria-expanded="false">
+        <span class="advanced-btn-label">Advanced</span>
+        <svg class="advanced-btn-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="4 6 8 10 12 6"/>
+        </svg>
+      </button>
+    </div>
+
+    <div id="advancedPanel" class="advanced-panel">
+      <div class="advanced-panel-inner">
+
+        <section id="verdict" class="verdict">
+          <div class="verdict-list" id="verdictList"></div>
+        </section>
+
+        <div class="lat-numbers">
+
+          <div class="numbers-divider">
+            <span class="numbers-divider-line"></span>
+            <span class="numbers-divider-label">Raw Numbers</span>
+            <span class="numbers-divider-line"></span>
+          </div>
+
+          <div class="metric-trio">
+            <div class="metric-block">
+              <span class="metric-name">Median RTT</span>
+              <span class="metric-val dim" id="val-median">—</span>
+            </div>
+            <div class="metric-block">
+              <span class="metric-name">p90 RTT</span>
+              <span class="metric-val dim" id="val-p90">—</span>
+            </div>
+            <div class="metric-block metric-block--last">
+              <span class="metric-name">Samples</span>
+              <span class="metric-val dim" id="val-samples">—</span>
+            </div>
+          </div>
+
+          <div class="kv-list">
+            <div class="kv-row">
+              <span class="kv-key">Min RTT</span>
+              <span class="kv-val dim" id="val-min">—</span>
+            </div>
+            <div class="kv-row">
+              <span class="kv-key">Max RTT</span>
+              <span class="kv-val dim" id="val-max">—</span>
+            </div>
+            <div class="kv-row">
+              <span class="kv-key">Jitter (σ)</span>
+              <span class="kv-val dim" id="val-jitter">—</span>
+            </div>
+          </div>
+
+          <div class="numbers-rule"></div>
+
+          <div class="hs-label">Handshake</div>
+          <div class="hs-pair">
+            <div class="hs-half">
+              <div class="hs-head">Cold start <span class="hs-tag cold">Cold</span></div>
+              <div class="hs-val dim" id="val-cold">—</div>
+              <div class="hs-meta" id="meta-cold">DNS + TCP + TLS</div>
+            </div>
+            <div class="hs-rule"></div>
+            <div class="hs-half">
+              <div class="hs-head">Warm <span class="hs-tag warm">Warm</span></div>
+              <div class="hs-val dim" id="val-warm">—</div>
+              <div class="hs-meta" id="meta-warm">6 warm-up probes · 50ms</div>
+            </div>
+          </div>
+
+          <div class="hs-delta-row">
+            <span class="hs-delta-label">Cold − Warm overhead</span>
+            <span class="hs-delta-val" id="val-delta">—</span>
+          </div>
+
+        </div><!-- /.lat-numbers -->
+
+      </div>
+    </div><!-- /#advancedPanel -->
+
+  </div><!-- /.lat-left -->
+
+
+  <div class="lat-charts fade-up-1">
+
+    <div class="chart-card">
+      <div class="chart-heading">
+        <span class="chart-title">Live RTT</span>
+        <span class="chart-tag" id="liveTag">idle</span>
+      </div>
+      <div class="chart-body">
+        <div class="chart-idle" id="liveIdle">Run a test to see live data</div>
+        <div id="liveChart" style="width:100%;height:100%;"></div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-heading">
+        <span class="chart-title">Jitter / Stability</span>
+        <span class="chart-tag" id="distTag">idle</span>
+      </div>
+      <div class="chart-body">
+        <div class="chart-idle" id="distIdle">Available after test completes</div>
+        <div id="distChart" style="width:100%;height:100%;"></div>
+      </div>
+    </div>
+
+  </div><!-- /.lat-charts -->
+
+</div><!-- /.lat-grid -->
+
+
+<footer class="footer">
+  <span class="footer-copy">© 2026 Libreprobe · Powered by Cloudflare Pages</span>
+  <div class="footer-links">
+    <a href="/data-sources" class="footer-link">Data Sources</a>
+    <span class="footer-sep">·</span>
+    <a href="/privacy" class="footer-link">Privacy</a>
+    <span class="footer-sep">·</span>
+    <a href="/about" class="footer-link">About</a>
+    <a href="https://github.com/grayguava/libreprobe" target="_blank" rel="noopener" class="footer-gh" aria-label="GitHub">
+      <svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+    </a>
+  </div>
+</footer>
+
+<script type="module" src="/assets/js/ui/navigation.js"></script>
+<script type="module">
+  import { init } from "/assets/js/apps/getStability.js";
+  init();
+</script>
+
+</body>
+</html>

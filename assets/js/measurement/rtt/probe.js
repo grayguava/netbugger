@@ -1,38 +1,35 @@
-/**
- * HTTP-level RTT probe.
- * Measures time from fetch start to response headers received.
- * This includes:
- *  - DNS (if uncached)
- *  - TCP handshake (if new connection)
- *  - TLS handshake (if new connection)
- *  - Request + response transit
- *
- * It does NOT measure ICMP or raw TCP RTT.
- */
-
 export async function probeRTT(
   endpoint = "/api/ping"
 ) {
+
   const url = endpoint + "?t=" + crypto.randomUUID();
+
   const start = performance.now();
 
   try {
     const response = await fetch(url, {
       cache: "no-store",
-      keepalive: false
+      keepalive: false,
     });
 
-    const latency = performance.now() - start;
+     const ttfb = performance.now() - start;
+
+    await response.text();
+    const totalLatency = performance.now() - start;
 
     return {
-      latency,
+      ttfb,               
+      latency: totalLatency,
+      status: response.status,
       success: response.ok,
       timestamp: performance.now()
     };
 
   } catch (err) {
     return {
+      ttfb: null,
       latency: null,
+      status: null,
       success: false,
       timestamp: performance.now(),
       error: true

@@ -1,13 +1,5 @@
-/*
- * Fetch Cloudflare edge connection metadata
- * Loads PoP map dynamically (no JSON module import)
- */
-
 let CF_EDGE_MAP = null;
 
-/**
- * Load Cloudflare PoP map once (cached in memory)
- */
 async function loadEdgeMap() {
   if (CF_EDGE_MAP) return CF_EDGE_MAP;
 
@@ -23,72 +15,42 @@ async function loadEdgeMap() {
 
   } catch (err) {
     console.error("Edge map load failed:", err);
-    CF_EDGE_MAP = {}; // fallback to empty object
+    CF_EDGE_MAP = {};
     return CF_EDGE_MAP;
   }
 }
 
-
-/**
- * Fetch connection information from backend
- */
 export async function getConnectionInfo(endpoint = "/api/info") {
-
   try {
-    const [infoRes, edgeMap] = await Promise.all([
-      fetch(endpoint + "?t=" + crypto.randomUUID(), {
-        cache: "no-store"
-      }),
+    const [res, edgeMap] = await Promise.all([
+      fetch(endpoint + "?t=" + crypto.randomUUID(), { cache: "no-store" }),
       loadEdgeMap()
     ]);
 
-    if (!infoRes.ok)
-      throw new Error("info request failed");
+    if (!res.ok) throw new Error("info request failed");
 
-    const data = await infoRes.json();
+    const raw = await res.json();
 
-    // Ray ID from response header
-    const rayId = infoRes.headers.get("CF-Ray");
-
-    const colo = data.colo ?? null;
+    const colo = raw.edge?.colo ?? null;
     const popMeta = colo && edgeMap[colo] ? edgeMap[colo] : null;
 
     return {
-
-      /* ---------- Edge Info ---------- */
-      colo,
-      rayId: rayId ?? null,
-
-      edgeCity: popMeta?.city ?? null,
-      edgeCountry: popMeta?.country ?? null,
-      edgeCountryCode: popMeta?.countryCode ?? null,
-      edgeLat: popMeta?.latitude ?? null,
-      edgeLon: popMeta?.longitude ?? null,
-
-      popFallback: !popMeta && !!colo,
-
-      /* ---------- Client Info ---------- */
-      clientIp: data.clientIp ?? null,
-      clientCity: data.city ?? null,
-      clientRegion: data.region ?? null,
-      clientCountry: data.country ?? null,
-      clientContinent: data.continent ?? null,
-      clientTimezone: data.timezone ?? null,
-      clientLat: data.clientLat ?? null,
-      clientLon: data.clientLon ?? null,
-
-      /* ---------- Network Info ---------- */
-      asn: data.asn ?? null,
-      isp: data.isp ?? null,
-      tls: data.tls ?? null,
-      http: data.http ?? null
+      client: raw.client ?? {},
+      network: raw.network ?? {},
+      protocol: raw.protocol ?? {},
+      edge: {
+        colo,
+        rayId: raw.edge?.rayId ?? null,
+        city: popMeta?.city ?? null,
+        country: popMeta?.country ?? null,
+        countryCode: popMeta?.countryCode ?? null,
+        latitude: popMeta?.latitude ?? null,
+        longitude: popMeta?.longitude ?? null
+      }
     };
 
   } catch (e) {
     console.error("Connection info error:", e);
-
-    return {
-      error: true
-    };
+    return { error: true };
   }
 }

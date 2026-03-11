@@ -1,71 +1,88 @@
-import { Sampler } from "../shared/sampler.js";
 import { probeRTT } from "./probe.js";
+import { Sampler } from "../shared/sampler.js";
 
-/**
- * Compute statistics from numeric RTT samples
- */
-function computeStats(values) {
-  const valid = values.filter(v => v !== null);
+const FIXED_SAMPLES = 100;
+
+function computeStats(allValues) {
+  const total = allValues.length;
+  const valid = allValues.filter(v => v !== null);
 
   if (!valid.length) {
     return {
-      avg: null,
-      jitter: null,
+      samples: 0,
+      attempts: total,
+      median: null,
+      p90: null,
       min: null,
       max: null,
+      jitter_std: null,
       loss: 1
     };
   }
 
-  const avg =
-    valid.reduce((a, b) => a + b, 0) / valid.length;
+  const sorted = [...valid].sort((a, b) => a - b);
+  const n = sorted.length;
+
+  const median =
+    n % 2 === 0
+      ? (sorted[n / 2 - 1] + sorted[n / 2]) / 2
+      : sorted[Math.floor(n / 2)];
+
+  const p90Index = Math.ceil(0.9 * n) - 1;
+  const p90 = sorted[Math.max(0, p90Index)];
+
+  const min = sorted[0];
+  const max = sorted[n - 1];
+
+  const avg = valid.reduce((a, b) => a + b, 0) / n;
 
   const variance =
     valid.map(v => (v - avg) ** 2)
-         .reduce((a, b) => a + b, 0) / valid.length;
+         .reduce((a, b) => a + b, 0) / n;
+
+  const jitter_std = Math.sqrt(variance);
 
   return {
-    avg,
-    jitter: Math.sqrt(variance),
-    min: Math.min(...valid),
-    max: Math.max(...valid),
-    loss: (values.length - valid.length) / values.length
+    samples: n,
+    attempts: total,
+    median,
+    p90,
+    min,
+    max,
+    jitter_std,
+    loss: (total - n) / total
   };
 }
 
-
-/**
- * Run RTT stability measurement session
- *
- * @param {number} durationMs
- * @param {number} intervalMs
- * @param {Function} onSample callback ({ latency })
- */
-export async function measureRTT(
-  durationMs = 5000,
+export async function measureRTT({
+  endpoint = "/api/ping",
   intervalMs = 100,
   onSample
-) {
+} = {}) {
+
   const sampler = new Sampler(intervalMs);
 
-  const samples = await sampler.run(async () => {
-    const result = await probeRTT();
+  const raw = await sampler.run(async () => {
+    const result = await probeRTT(endpoint);
 
-    if (onSample && result.latency != null) {
-      onSample({ latency: result.latency });
+    const ttfb = result.success && result.ttfb != null
+      ? result.ttfb
+      : null;
+
+    if (ttfb !== null && onSample) {
+      onSample({ ttfb, latency: result.latency });
     }
 
-    return result.latency;
-  }, durationMs);
+    return ttfb;
+  }, FIXED_SAMPLES);
 
-  const values = samples.map(s => s.v);
+  const allValues = raw.map(s => s.v);
 
-const stats = computeStats(values);
-
-return {
-  duration: durationMs,
-  interval: intervalMs,
-  samples,
-  ...stats
-};
+  return {
+    samples: FIXED_SAMPLES,
+    intervalMs,
+    durationMs: raw.length ? raw[raw.length - 1].t : 0,
+    ...computeStats(allValues),
+    raw: allValues
+  };
 }

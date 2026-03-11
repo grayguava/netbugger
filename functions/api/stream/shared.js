@@ -3,46 +3,51 @@
 import {
   TOKEN_TTL_MS,
   MAX_STREAMS_PER_TOKEN,
-  DAILY_TOKEN_LIMIT
+  DAILY_TOKEN_LIMIT,
+  COUNTER_TTL_SECONDS,
 } from "./globals.js";
 
-// In-memory state (per isolate)
 export const activeTokens = new Map();
-
-let currentDay = null;
-let dailyCount = 0;
 
 function getTodayKey() {
   const d = new Date();
-  return `${d.getUTCFullYear()}-${d.getUTCMonth() + 1}-${d.getUTCDate()}`;
+  const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(d.getUTCDate()).padStart(2, '0');
+  return `daily:${d.getUTCFullYear()}-${mm}-${dd}`;
+}
+async function getCount(kv) {
+  const val = await kv.get(getTodayKey());
+  return val ? parseInt(val, 10) : 0;
+}
+async function incrementCount(kv) {
+  const key   = getTodayKey();
+  const val   = await kv.get(key);
+  const next  = (val ? parseInt(val, 10) : 0) + 1;
+  await kv.put(key, String(next), { expirationTtl: COUNTER_TTL_SECONDS });
+  return next;
 }
 
-function resetDailyIfNeeded() {
-  const today = getTodayKey();
-  if (currentDay !== today) {
-    currentDay = today;
-    dailyCount = 0;
-  }
+
+export async function canIssueToken(kv) {
+  const count = await getCount(kv);
+  return count < DAILY_TOKEN_LIMIT;
 }
 
-export function canIssueToken() {
-  resetDailyIfNeeded();
-  return dailyCount < DAILY_TOKEN_LIMIT;
-}
+export async function issueToken(kv) {
+  await incrementCount(kv);
 
-export function issueToken() {
-  const token = crypto.randomUUID();
+  const token  = crypto.randomUUID();
   const expiry = Date.now() + TOKEN_TTL_MS;
 
   activeTokens.set(token, {
     expiry,
     streamsOpened: 0,
-    maxStreams: MAX_STREAMS_PER_TOKEN
+    maxStreams: MAX_STREAMS_PER_TOKEN,
   });
 
-  dailyCount++;
   return token;
 }
+
 
 export function validateAndConsumeStream(token) {
   if (!token) return false;
@@ -62,7 +67,6 @@ export function validateAndConsumeStream(token) {
 
   record.streamsOpened++;
 
-  // If max streams reached, invalidate token
   if (record.streamsOpened >= record.maxStreams) {
     activeTokens.delete(token);
   }
