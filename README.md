@@ -1,34 +1,132 @@
 # Libreprobe
 
-**See your connection. Test your connection.**
+**See your connection. Understand your connection.**
 
-A network visibility and performance testing tool. Libreprobe shows you what your ISP, device, and Cloudflare's network know about your connection — and lets you measure how well it actually performs.
+Libreprobe is a network visibility and performance testing tool that shows not just how fast your connection is — but how reliably it actually works in real life.
 
-Live at [libreprobe.qzz.io](https://libreprobe.qzz.io)
+Most speed tests focus on peak numbers. Libreprobe focuses on behavior: stability, consistency, and real-world usability.
 
 ![Homepage](./screenshots/homepage.png)
 
+Live at https://libreprobe.qzz.io
+
+---
+## When should you use Libreprobe?
+
+Use it when:
+
+- Calls lag even though your speed looks fine  
+- Gaming feels inconsistent or spiky  
+- Streaming buffers randomly  
+- Downloads stall or fluctuate  
+- You suspect routing or ISP issues  
+- You're debugging network or application performance  
+
+Libreprobe helps answer a simple question:
+
+**Is your connection actually working well — or just looking fast?**
+
 ---
 
+## What makes it different
+
+Most speed tests measure burst throughput.
+
+Libreprobe measures sustained delivery quality.
+
+Most tools show averages.
+
+Libreprobe shows variance, jitter, and consistency.
+
+Most tools give numbers.
+
+Libreprobe explains what they mean in real-world terms — calls, streaming, gaming, and browsing.
+
+---
+## Example
+
+Your ISP says: **200 Mbps**
+
+But:
+
+- Calls stutter  
+- Games lag  
+- Streams buffer  
+
+Libreprobe might show:
+
+- Good speed  
+- High jitter  
+
+Meaning:
+
+The problem isn’t bandwidth — it’s delivery stability.
+
+This is exactly the kind of issue Libreprobe is designed to reveal.
+
+---
+## How Libreprobe works
+
+Libreprobe combines connection visibility with performance measurement and behavioral interpretation.
+
+---
 ## What it does
 
-**Visibility** — On page load, a Cloudflare Worker reads the headers attached to your request and returns them to your browser: your IP, geolocation, ISP, ASN, TLS and HTTP versions, and the edge PoP handling your traffic. No lookup services, no third-party APIs — the data comes directly from the infrastructure serving you.
+### Visibility  
+On page load, a Cloudflare Worker reads the headers attached to your request and returns them to your browser: IP, geolocation, ISP, ASN, TLS/HTTP versions, and the edge PoP handling your traffic.
 
-**Throughput test** — Measures sustained download capacity using parallel streams and chunk-event bucketing. Reports sustained speed (p75 post-ramp), peak (p95), variance, ramp time, and transfer stats. Designed to reflect real-world capacity rather than burst speed.
-
-**Stability test** — Sends 100 probes at 100ms intervals and measures round-trip time, jitter, p90 latency, and cold vs. warm handshake overhead. Results are visualised as a live RTT chart and a per-interval jitter chart.
-
-For measurement methodology, metric definitions, and known caveats see [`docs/methodology/index.md`](./docs/methodology/index.md).
+No lookup services. No third-party APIs. The data comes directly from the infrastructure serving you.
 
 ---
+### Throughput test  
+Measures sustained download capacity using parallel streams and chunk-event bucketing.
 
+Reports:
+
+- Sustained speed (p75 post-ramp)  
+- Peak speed (p95)  
+- Variance and consistency  
+- Ramp time  
+- Transfer stats  
+
+Designed to reflect real-world capacity — not juts short-lived burst speed.
+
+---
+### Stability test  
+Sends 100 probes at 100 ms intervals and measures:
+
+- Median RTT  
+- Jitter  
+- p90 latency  
+- Cold vs. warm handshake overhead  
+
+Results are visualised as live RTT and jitter charts with real-world interpretation.
+
+---
+## Who it’s for
+
+Libreprobe is useful for:
+
+**Everyday users**  
+Trying to understand why their connection feels slow or unreliable.
+
+**Gamers and streamers**  
+Who care about stability, not just speed.
+
+**Developers and IT professionals**  
+Debugging performance, routing, or infrastructure issues.
+
+**Students and learners**  
+Trying to understand how real-world networks behave.
+
+---
 ## Pages
 
 | Route | Description |
 |---|---|
 | `/` | Your IP, location, ASN, TLS/HTTP version, client↔edge map |
-| `/info/` | Full connection breakdown — device, network, and edge columns |
-| `/throughput/` | Download speed test with live chart and advanced metrics |
+| `/info/` | Full connection breakdown — device, network, and edge |
+| `/throughput/` | Sustained download test with live chart and advanced metrics |
 | `/stability/` | Latency and jitter test with live RTT and jitter charts |
 
 ![Info page](./screenshots/infopage.png)
@@ -39,19 +137,34 @@ For measurement methodology, metric definitions, and known caveats see [`docs/me
 
 ---
 
-## Stack
+## Methodology (short)
 
-- **Runtime** — Cloudflare Workers (V8 isolates)
-- **Hosting** — Cloudflare Pages
-- **Connection data** — Cloudflare request headers (`CF-Ray`, `CF-IPCountry`, `CF-Connecting-IP`, etc.)
-- **Edge location map** — Static JSON mapping IATA PoP codes to city and coordinates
-- **Map** — OpenStreetMap via CARTO, rendered with [Leaflet](https://leafletjs.com)
-- **Charts** — [Apache ECharts](https://echarts.apache.org)
-- **Frontend** — Vanilla JS, ES modules, no framework, no build step
+Libreprobe prioritises realistic measurement over synthetic benchmarks.
+
+- Multi-stream sustained throughput testing  
+- Post-ramp variance modelling  
+- Percentile-based latency analysis  
+- Fixed-interval RTT probing  
+- Behaviour-focused interpretation layer  
+
+For full details, metric definitions, and caveats see:
+
+[`docs/methodology/`](./docs/methodology/)
 
 ---
+## Stack
 
+- Runtime — Cloudflare Workers (V8 isolates)  
+- Hosting — Cloudflare Pages  
+- Connection data — Cloudflare request headers (`CF-Ray`, `CF-IPCountry`, etc.)  
+- Map — OpenStreetMap via CARTO, rendered with Leaflet  
+- Charts — Apache ECharts  
+- Frontend — Vanilla JS (ES modules), no framework, no build step  
+
+---
 ## Project structure
+
+High-level layout:
 
 ```
 libreprobe/
@@ -108,20 +221,30 @@ libreprobe/
 
 ## Deployment
 
-Libreprobe is a fully static site with Cloudflare Workers functions — no build step required for the frontend. The `functions/api/` directory is deployed automatically by Cloudflare Pages as Workers.
+Libreprobe is a fully static site with Cloudflare Workers functions.  
+No frontend build step required.
 
-For full deployment instructions, environment requirements, and self-hosting notes see [`docs/deployment/index.md`](./docs/deployment/index.md).
+The `functions/api/` directory is deployed automatically by Cloudflare Pages as Workers.
+
+For full deployment instructions and self-hosting notes see:
+
+[`docs/deployment/`](./docs/deployment/)
 
 ---
-
 ## Privacy
 
-Libreprobe is stateless. No data is stored, no accounts exist, no analytics run. Connection metadata is processed in memory to generate the API response and discarded when the response is sent.
+Libreprobe is stateless.
 
-See [libreprobe.qzz.io/privacy/](https://libreprobe.qzz.io/privacy/) for the full policy.
+- No accounts  
+- No analytics  
+- No tracking  
+- No stored results  
+
+Connection metadata is processed in memory to generate responses and discarded immediately.
+
+Full policy: https://libreprobe.qzz.io/privacy/
 
 ---
-
 ## License
 
-MIT — see [LICENSE](./LICENSE)
+MIT — see LICENSE
