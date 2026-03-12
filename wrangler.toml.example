@@ -1,0 +1,10 @@
+# wrangler.toml.example
+
+name = "libreprobe"
+main = "functions/api/stream/index.js"
+compatibility_date = "2026-03-12"
+
+[[kv_namespaces]]
+binding = "LIBREPROBE_THROUGHPUT_RL"
+id = "YOUR_KV_NAMESPACE_ID"
+preview_id = "YOUR_KV_PREVIEW_ID"
