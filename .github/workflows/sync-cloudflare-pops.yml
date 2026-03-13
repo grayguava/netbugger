@@ -33,7 +33,7 @@ jobs:
       - name: Check for changes
         id: diff
         run: |
-          git diff --quiet data/cloudflare-edge-locations.json \
+          git diff --quiet assets/data/cloudflare-edge-locations.json \
             && echo "changed=false" >> "$GITHUB_OUTPUT" \
             || echo "changed=true"  >> "$GITHUB_OUTPUT"
 
@@ -42,13 +42,13 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/cloudflare-edge-locations.json
+          git add assets/data/cloudflare-edge-locations.json
           git commit -m "chore: sync Cloudflare edge PoPs [skip ci]"
           git push
 
       - name: No changes detected
         if: steps.diff.outputs.changed == 'false'
-        run: echo "data/cloudflare-edge-locations.json is already up-to-date."
+        run: echo "assets/data/cloudflare-edge-locations.json is already up-to-date."
 
       - name: Upload run log as artifact
         if: always()
