@@ -1,0 +1,58 @@
+name: sync Cloudflare edge PoPs
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+
+  push:
+    paths:
+      - "scripts/sync-cloudflare-pops.py"
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run sync script
+        run: python scripts/sync-cloudflare-pops.py
+
+      - name: Check for changes
+        id: diff
+        run: |
+          git diff --quiet data/cloudflare-edge-locations.json \
+            && echo "changed=false" >> "$GITHUB_OUTPUT" \
+            || echo "changed=true"  >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push updated JSON
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/cloudflare-edge-locations.json
+          git commit -m "chore: sync Cloudflare edge PoPs [skip ci]"
+          git push
+
+      - name: No changes detected
+        if: steps.diff.outputs.changed == 'false'
+        run: echo "data/cloudflare-edge-locations.json is already up-to-date."
+
+      - name: Upload run log as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sync-log-${{ github.run_id }}
+          path: sync-cloudflare-pops.log
+          retention-days: 30
