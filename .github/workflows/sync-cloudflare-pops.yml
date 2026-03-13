@@ -41,7 +41,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/cloudflare-edge-locations.json
+          git add assets/data/cloudflare-edge-locations.json
           git commit -m "chore: sync Cloudflare edge PoPs [skip ci]"
           git push
 
