@@ -27,7 +27,7 @@ jobs:
           python-version: "3.12"
 
       - name: Run sync script
-        run: python scripts/sync-cloudflare-pops.py
+        run: python scripts/sync_cloudflare_pops.py
 
       - name: Check for changes
         id: diff
