@@ -2,16 +2,17 @@ name: sync Cloudflare edge PoPs
 
 on:
   schedule:
-    - cron: "0 6 * * 1"
+    - cron: "0 6 */3 * *"
 
   push:
     paths:
-      - "scripts/sync_cloudflare_pops.py"
-
+      - "scripts/sync-cloudflare-pops.py"
+      
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: write 
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -27,12 +28,12 @@ jobs:
           python-version: "3.12"
 
       - name: Run sync script
-        run: python scripts/sync_cloudflare_pops.py
+        run: python scripts/sync_cloudflare_pops.py --data assets/data/cloudflare-edge-locations.json
 
       - name: Check for changes
         id: diff
         run: |
-          git diff --quiet assets/data/cloudflare-edge-locations.json \
+          git diff --quiet data/cloudflare-edge-locations.json \
             && echo "changed=false" >> "$GITHUB_OUTPUT" \
             || echo "changed=true"  >> "$GITHUB_OUTPUT"
 
@@ -41,18 +42,18 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add assets/data/cloudflare-edge-locations.json
+          git add data/cloudflare-edge-locations.json
           git commit -m "chore: sync Cloudflare edge PoPs [skip ci]"
           git push
 
       - name: No changes detected
         if: steps.diff.outputs.changed == 'false'
-        run: echo "assets/data/cloudflare-edge-locations.json is already up-to-date."
+        run: echo "data/cloudflare-edge-locations.json is already up-to-date."
 
       - name: Upload run log as artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: sync-log-${{ github.run_id }}
-          path: sync-cloudflare-pops.log
+          path: scripts/sync-cloudflare-pops.log
           retention-days: 30
