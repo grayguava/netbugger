@@ -6,7 +6,7 @@ on:
 
   push:
     paths:
-      - "scripts/sync-cloudflare-pops.py"
+      - "scripts/sync_cloudflare_pops.py"
 
   workflow_dispatch:
 
