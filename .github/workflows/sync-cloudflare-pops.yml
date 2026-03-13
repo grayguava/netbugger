@@ -32,7 +32,7 @@ jobs:
       - name: Check for changes
         id: diff
         run: |
-          git diff --quiet data/cloudflare-edge-locations.json \
+          git diff --quiet assets/data/cloudflare-edge-locations.json \
             && echo "changed=false" >> "$GITHUB_OUTPUT" \
             || echo "changed=true"  >> "$GITHUB_OUTPUT"
 
@@ -47,7 +47,7 @@ jobs:
 
       - name: No changes detected
         if: steps.diff.outputs.changed == 'false'
-        run: echo "data/cloudflare-edge-locations.json is already up-to-date."
+        run: echo "assets/data/cloudflare-edge-locations.json is already up-to-date."
 
       - name: Upload run log as artifact
         if: always()
