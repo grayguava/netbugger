@@ -7,7 +7,7 @@ from pathlib import Path
 
 CF_ENDPOINT     = "https://speed.cloudflare.com/locations"
 COORD_PRECISION = 6
-LOG_FILE        = Path("sync-cloudflare-pops.log")
+LOG_FILE        = Path("scripts/sync-cloudflare-pops.log")
 
 EXTRA_COUNTRIES: dict[str, str] = {
     "CR": "Costa Rica",
@@ -27,7 +27,7 @@ parser = argparse.ArgumentParser(description="Sync Cloudflare edge PoP data.")
 parser.add_argument(
     "--data",
     default="data/cloudflare-edge-locations.json",
-    help="Path to cloudflare-edge-locations.json (default: data/cloudflare-edge-locations.json)",
+    help="Path to cloudflare-edge-locations.json (default: assets/data/cloudflare-edge-locations.json)",
 )
 parser.add_argument(
     "--dry-run",
