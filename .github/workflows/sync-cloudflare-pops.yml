@@ -6,12 +6,15 @@ on:
 
   push:
     paths:
-      - "scripts/sync-cloudflare-pops.py"
-      
+      - "scripts/sync_cloudflare_pops.py"
+
   workflow_dispatch:
 
 permissions:
-  contents: write 
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   sync:
@@ -50,10 +53,13 @@ jobs:
         if: steps.diff.outputs.changed == 'false'
         run: echo "assets/data/cloudflare-edge-locations.json is already up-to-date."
 
-      - name: Upload run log as artifact
+      - name: Commit run log
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: sync-log-${{ github.run_id }}
-          path: scripts/sync-cloudflare-pops.log
-          retention-days: 30
+        run: |
+          mkdir -p scripts/logs
+          cp scripts/sync-cloudflare-pops.log "scripts/logs/$(date -u +%Y-%m-%d_%H-%M-%S).log"
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add scripts/logs/
+          git diff --cached --quiet || git commit -m "chore: add sync run log [skip ci]"
+          git push
