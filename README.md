@@ -83,7 +83,7 @@ Measures sustained download capacity using parallel streams and chunk-event buck
 
 Reports:
 
-- Sustained speed (p75 post-ramp)  
+- Sustained speed (median post-ramp)  
 - Peak speed (p95)  
 - Variance and consistency  
 - Ramp time  

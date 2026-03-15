@@ -14,13 +14,13 @@ The throughput test measures the sustained download capacity of the connection f
 
 Most speed tests report peak or short-burst speed. This overstates practical performance because TCP connections start slowly (slow-start), ISPs apply burst buffering that delivers high speeds briefly before throttling, and a single large download rarely sustains the peak rate seen at the start.
 
-Sustained speed (p75 of post-ramp samples) reflects what the connection actually delivers during extended transfers. This is the number that matters for 4K streaming, large file downloads, and cloud backup — the workloads where throughput is the bottleneck.
+Sustained speed (median of post-ramp samples) reflects what the connection actually delivers during extended transfers. This is the number that matters for 4K streaming, large file downloads, and cloud backup — the workloads where throughput is the bottleneck.
 
 ## Why parallel streams
 
-A single TCP stream is throttled by the TCP congestion window, which grows incrementally. A single stream therefore never fully utilises a high-capacity connection during a short test window. 4 parallel streams (`PARALLEL = 4`) allow each to independently probe capacity, and their combined throughput gives a realistic picture of what the connection can deliver to a multi-resource workload (a web page loading dozens of assets, or a browser downloading in parallel).
+A single TCP stream is throttled by the TCP congestion window, which grows incrementally. A single stream therefore never fully utilises a high-capacity connection during a short test window. 8 parallel streams (`PARALLEL = 8`) allow each to independently probe capacity, and their combined throughput gives a realistic picture of what the connection can deliver to a multi-resource workload (a web page loading dozens of assets, or a browser downloading in parallel).
 
-`MAX_STREAMS_PER_TOKEN = 4` on the server matches this constant, enforced per token.
+`MAX_STREAMS_PER_TOKEN = 8` on the server matches this constant, enforced per token.
 
 ## Why chunk-event bucketing
 
@@ -34,16 +34,16 @@ This approach is more accurate than a single start/end elapsed time because it c
 
 ## Why adaptive duration
 
-The baseline test duration is 14 seconds (`BASE_DURATION = 14_000`). After the baseline, the test checks whether the connection has finished ramping. If it is still ramping — speed is still climbing and has not plateaued — the test extends to a maximum of 20 seconds (`MAX_DURATION = 20_000`). If ramp-up consumed more than 40% of the baseline, duration is extended proportionally.
+The baseline test duration is 14 seconds (`BASE_DURATION = 14_000`). After the baseline, the test checks whether the connection has finished ramping. If it is still ramping — speed is still climbing and has not plateaued — the test extends to a maximum of 24 seconds (`MAX_DURATION = 24_000`). If ramp-up consumed more than 40% of the baseline, duration is extended proportionally.
 
 This ensures that on fast connections where slow-start takes longer to complete, the test collects enough post-ramp samples for the sustained speed calculation to be meaningful. A fixed 10-second test on a gigabit connection might spend 8 seconds in ramp-up and only 2 seconds at full speed, producing a misleading sustained figure.
 
 ## Why a token system
 
-Each test opens 4 parallel streams, each capable of transferring up to 100 MB (`TOTAL_BYTES = 100 * 1024 * 1024`). Without a gate, a single user could exhaust significant bandwidth. The token system enforces:
+Each test opens 8 parallel streams, each capable of transferring up to 100 MB (`TOTAL_BYTES = 100 * 1024 * 1024`). Without a gate, a single user could exhaust significant bandwidth. The token system enforces:
 
 - **Global daily cap** — 100 tests per UTC day (`DAILY_TOKEN_LIMIT = 100`), enforced via Cloudflare KV shared across all edge isolates
-- **Per-token stream limit** — a token authorises exactly 4 stream opens (`MAX_STREAMS_PER_TOKEN = 4`), matching the client's `PARALLEL` constant
+- **Per-token stream limit** — a token authorises exactly 8 stream opens (`MAX_STREAMS_PER_TOKEN = 8`), matching the client's `PARALLEL` constant
 - **Token TTL** — tokens expire after 30 seconds (`TOKEN_TTL_MS = 30_000`), preventing a token from being reused after a test completes
 
 ## Why random bytes for stream payload

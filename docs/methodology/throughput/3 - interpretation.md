@@ -195,7 +195,7 @@ No finding is generated for the normal range (1.5–4s) — this is expected and
 | `val-still-ramping` | `still_ramping` boolean |
 | `val-bytes` | `bytes_total` in MB |
 | `val-duration` | `duration_ms` in seconds |
-| `val-streams` | `streams` (always 4) |
+| `val-streams` | `streams` (always 8) |
 | `val-samples` | `samples.length` |
 
 Variance KV cells receive inline colour class: `err` if `variance_mbps / sustained > 0.35`, `warn` if > 0.15. Ramp KV cell receives `warn` if `ramp_ms > 5000`.
@@ -217,6 +217,6 @@ Updated live via `pushSample()` as `onSample` callbacks fire during the test. Af
 
 - **Isolate token mismatch** — token issuance and stream serving may hit different Cloudflare Workers isolates. If they do, stream validation fails with 403 because `activeTokens` is not shared across isolates. At low traffic this is unlikely but possible.
 - **Sustained vs. plan speed** — sustained speed reflects the path from the browser to the Cloudflare edge, not end-to-end ISP plan speed. Congestion between edge and origin, or between the user and the nearest PoP, will reduce measured throughput below the advertised plan rate.
-- **Parallel stream overhead** — 4 streams compete for the same bottleneck link. On connections with strict per-flow rate limiting, 4 streams may saturate the link faster than a single stream would. On connections without per-flow limits, the streams combine to probe total capacity. The test is designed for the latter, which reflects the majority of residential connections.
-- **100 MB cap per stream** — at very high speeds (≥ 570 Mbps sustained × 4 streams), all streams hit their 100 MB cap before the test duration ends. The test will not run out of data under typical broadband conditions but may on high-capacity enterprise links.
+- **Parallel stream overhead** — 8 streams compete for the same bottleneck link. On connections with strict per-flow rate limiting, 8 streams may saturate the link faster than a single stream would. On connections without per-flow limits, the streams combine to probe total capacity. The test is designed for the latter, which reflects the majority of residential connections.
+- **100 MB cap per stream** — at very high speeds (≥ 570 Mbps sustained × 8 streams), all streams hit their 100 MB cap before the test duration ends. The test will not run out of data under typical broadband conditions but may on high-capacity enterprise links.
 - **Browser scheduling** — `setInterval` live ticker and test duration timers are subject to browser timer throttling in background tabs. Running the test in a backgrounded or hidden tab may produce incorrect duration and live chart data. Results are still valid since `chunkLog` timestamps use `performance.now()`.

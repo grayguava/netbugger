@@ -4,7 +4,7 @@
 
 ```
 GET /api/stream           → token issued (KV-gated)
-GET /api/stream/<token>   → 4 parallel streams opened
+GET /api/stream/<token>   → 8 parallel streams opened
 chunk events              → logged to chunkLog with timestamps
 750ms ticker              → live samples emitted via onSample
 BASE_DURATION (14s)       → preliminary stats computed
@@ -22,10 +22,10 @@ Implemented in `assets/js/measurement/throughput/measureDownlink.js` and `functi
 
 ```js
 const BASE_DURATION  = 14_000;  // ms — minimum test duration
-const MAX_DURATION   = 20_000;  // ms — maximum test duration
+const MAX_DURATION   = 24_000;  // ms — maximum test duration
 const BUCKET_MS      = 750;     // ms — bucketing window
-const PARALLEL       = 4;       // parallel streams
-const RAMP_WINDOW    = 3;       // buckets used in ramp detection sliding window
+const PARALLEL       = 8;       // parallel streams
+const RAMP_WINDOW    = 5;       // buckets used in ramp detection sliding window
 ```
 
 Server-side (globals.js):
@@ -33,7 +33,7 @@ Server-side (globals.js):
 export const TOTAL_BYTES          = 100 * 1024 * 1024;  // 100 MB per stream
 export const CHUNK_SIZE           = 64  * 1024;          // 64 KB per write
 export const TOKEN_TTL_MS         = 30  * 1000;          // 30s token validity
-export const MAX_STREAMS_PER_TOKEN = 4;                  // matches PARALLEL
+export const MAX_STREAMS_PER_TOKEN = 8;                  // matches PARALLEL
 export const DAILY_TOKEN_LIMIT    = 100;                 // global daily cap
 export const COUNTER_TTL_SECONDS  = 25 * 60 * 60;       // KV key expiry
 ```
@@ -84,7 +84,7 @@ const body = await res.json();
 token = body.token;
 ```
 
-4 stream pumps launched simultaneously:
+8 stream pumps launched simultaneously:
 ```js
 Promise.all(Array.from({ length: PARALLEL }, () => pump(streamUrl)))
 ```
@@ -134,8 +134,8 @@ buckets.set(idx, (buckets.get(idx) ?? 0) + bytes);
 Filters and converts:
 
 - Skips bucket 0 if empty (stream not yet open at t=0)
-- Skips any bucket with < 50% fill (`fill < 0.50`) — prevents the final partial bucket from producing an artificially low or high reading
-- Computes effective window for the final bucket: `Math.min(BUCKET_MS, durationMs - bucketStartMs)`
+- Skips any bucket with < 25% fill (`fill < 0.25`) — prevents the final partial bucket from producing an artificially low or high reading, but captures more data than the previous 50% threshold
+- Computes effective window for the final bucket: `Math.max(fill * BUCKET_MS, 100)` — uses weighted calculation with 100ms minimum to avoid division artifacts
 - Converts to Mbps: `(bytes * 8) / (effectiveMs * 1000)`
 
 Returns array of `{ t, mbps, MBps }` where `t` is the bucket end time in seconds.
@@ -146,13 +146,13 @@ Returns array of `{ t, mbps, MBps }` where `t` is the bucket end time in seconds
 
 ```js
 function isStillRamping(vals) {
-  if (vals.length < 3) return true;
+  if (vals.length < 4) return true;
   const rises = vals.filter((v, i) => i > 0 && v > vals[i - 1]).length;
-  return rises / (vals.length - 1) >= 0.60;
+  return rises / (vals.length - 1) >= 0.75;
 }
 ```
 
-Returns true if ≥ 60% of consecutive bucket pairs are still increasing. Applied to post-ramp values after the main computation to determine if speed had plateaued by test end.
+Returns true if ≥ 75% of consecutive bucket pairs are still increasing. Applied to post-ramp values after the main computation to determine if speed had plateaued by test end. The higher threshold (vs. previous 60%) reduces false positives from normal variance.
 
 ---
 
@@ -161,7 +161,7 @@ Returns true if ≥ 60% of consecutive bucket pairs are still increasing. Applie
 After `BASE_DURATION` elapses:
 
 1. Compute preliminary bucket samples from current `chunkLog`
-2. Identify ramp threshold: p75 of second-half samples × 0.90
+2. Identify ramp threshold: median of second-half samples × 0.90
 3. Find ramp index: first 3-bucket window averaging ≥ ramp threshold
 4. Check `isStillRamping` on post-ramp values
 5. Compute `rampRatio = ramp_ms / BASE_DURATION`
@@ -181,7 +181,7 @@ Input: array of bucket samples `{ t, mbps }`.
 
 **Ramp detection (final):**
 ```
-roughSustained = p75 of second half of vals
+roughSustained = median of second half of vals
 rampThreshold  = roughSustained * 0.90
 rampIdx        = first index where 3-bucket rolling average >= rampThreshold
 postRampVals   = vals.slice(rampIdx) — or all vals if no ramp detected
@@ -191,7 +191,7 @@ postRampVals   = vals.slice(rampIdx) — or all vals if no ramp detected
 
 | Metric | Formula |
 |---|---|
-| `sustained_mbps` | p75 of `postRampVals` (sorted) |
+| `sustained_mbps` | median (p50) of `postRampVals` (sorted) |
 | `peak_mbps` | p95 of all vals (sorted) |
 | `p99_mbps` | p99 of all vals (sorted) |
 | `average_mbps` | arithmetic mean of all vals |
@@ -215,7 +215,7 @@ All percentiles use: `sorted[max(0, ceil(p * n) - 1)]`
   still_ramping,  // boolean
   duration_ms,    // total test wall time
   bytes_total,    // total bytes received across all streams
-  streams,        // PARALLEL (4)
+  streams,        // PARALLEL (8)
   samples,        // bucket sample array
 }
 ```

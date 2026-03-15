@@ -1,10 +1,10 @@
 const TOKEN_ENDPOINT  = "/api/stream";
 const STREAM_ENDPOINT = "/api/stream";
 const BASE_DURATION   = 14_000;
-const MAX_DURATION    = 20_000;
+const MAX_DURATION    = 24_000;
 const BUCKET_MS       = 750;
-const PARALLEL        = 4;
-const RAMP_WINDOW     = 3;
+const PARALLEL        = 8;
+const RAMP_WINDOW     = 5;
 
 
 function percentile(sorted, p) {
@@ -17,9 +17,9 @@ function stddev(arr) {
 }
 function toMBps(mbps) { return parseFloat((mbps / 8).toFixed(3)); }
 function isStillRamping(vals) {
-  if (vals.length < 3) return true;
+  if (vals.length < 4) return true;
   const rises = vals.filter((v, i) => i > 0 && v > vals[i - 1]).length;
-  return rises / (vals.length - 1) >= 0.60;
+  return rises / (vals.length - 1) >= 0.75;
 }
 
 
@@ -37,8 +37,8 @@ function bucketEvents(chunkLog, durationMs) {
     const bytes = buckets.get(i) ?? 0;
     if (bytes === 0 && i === 0) continue;
     const fill = Math.min(1, (durationMs - bucketStartMs) / BUCKET_MS);
-    if (fill < 0.50) continue;
-    const effectiveMs = Math.min(BUCKET_MS, durationMs - bucketStartMs);
+    if (fill < 0.25) continue;
+    const effectiveMs = Math.max(fill * BUCKET_MS, 100);
     const mbps = (bytes * 8) / (effectiveMs * 1000);
     samples.push({
       t:    parseFloat(((i + 1) * BUCKET_MS / 1000).toFixed(3)),
@@ -54,7 +54,7 @@ function computeStats(samples) {
   if (!samples.length) return null;
   const vals = samples.map(s => s.mbps);
   const halfwayIdx     = Math.floor(vals.length / 2);
-  const roughSustained = percentile([...vals.slice(halfwayIdx)].sort((a,b)=>a-b), 0.75);
+  const roughSustained = percentile([...vals.slice(halfwayIdx)].sort((a,b)=>a-b), 0.50);
   const rampThreshold  = roughSustained * 0.90;
   let rampIdx = null, ramp_ms = null;
   for (let i = 0; i <= vals.length - RAMP_WINDOW; i++) {
@@ -65,7 +65,7 @@ function computeStats(samples) {
   const stillRamping   = isStillRamping(postRampVals);
   const sortedPost     = [...postRampVals].sort((a,b)=>a-b);
   const sorted_all     = [...vals].sort((a,b)=>a-b);
-  const sustained_mbps = percentile(sortedPost, 0.75);
+  const sustained_mbps = percentile(sortedPost, 0.50);
   const peak_mbps      = percentile(sorted_all, 0.95);
   const p99_mbps       = percentile(sorted_all, 0.99);
   const average_mbps   = mean(vals);
@@ -167,7 +167,7 @@ export async function runThroughputTest({ onSample, onStatus } = {}) {
       if (avg >= rampThreshold) { rampMs = prelim[i + RAMP_WINDOW - 1].t * 1000; break; }
     }
     const postRamp = rampMs != null ? prelimVals.slice(prelim.findIndex(s => s.t * 1000 >= rampMs)) : [];
-    const stillRamping = postRamp.length >= 2 ? isStillRamping(postRamp) : true;
+    const stillRamping = postRamp.length >= 4 ? isStillRamping(postRamp) : true;
     const rampRatio    = (rampMs ?? BASE_DURATION) / BASE_DURATION;
     if (stillRamping && rampRatio > 0.50) {
       finalDuration = MAX_DURATION;
