@@ -1,165 +1,129 @@
 # Libreprobe
 
-**See your connection. Understand your connection.**
+Find out why your internet feels bad — even when speed tests look good.
 
-Libreprobe is a network visibility and performance testing tool that shows not just how fast your connection is — but how reliably it actually works in real life.
+👉 Try it instantly: https://libreprobe.qzz.io
 
-Most speed tests focus on peak numbers. Libreprobe focuses on behavior: stability, consistency, and real-world usability.
-
-![Homepage](./screenshots/homepage.png)
-
-Live at https://libreprobe.qzz.io
-
----
-## When should you use Libreprobe?
-
-Use it when:
-
-- Calls lag even though your speed looks fine  
-- Gaming feels inconsistent or spiky  
-- Streaming buffers randomly  
-- Downloads stall or fluctuate  
-- You suspect routing or ISP issues  
-- You're debugging network or application performance  
-
-Libreprobe helps answer a simple question:
-
-**Is your connection actually working well — or just looking fast?**
+![Stability](./screenshots/stability.png)
 
 ---
 
-## What makes it different
+## The problem
 
-Most speed tests measure burst throughput.
-
-Libreprobe measures sustained delivery quality.
-
-Most tools show averages.
-
-Libreprobe shows variance, jitter, and consistency.
-
-Most tools give numbers.
-
-Libreprobe explains what they mean in real-world terms — calls, streaming, gaming, and browsing.
+Speed tests show *bandwidth*. They don't show *delivery quality*. A connection can have 200 Mbps but still cause laggy calls, stuttering games, and buffering streams because of high jitter, latency variance, or inconsistent throughput.
 
 ---
+
 ## Example
 
-Your ISP says: **200 Mbps**
+Your ISP promises 200 Mbps. Speed test confirms it. But:
+- VoIP calls stutter
+- Online games lag randomly
+- Streams buffer occasionally
 
-But:
-
-- Calls stutter  
-- Games lag  
-- Streams buffer  
-
-Libreprobe might show:
-
-- Good speed  
-- High jitter  
-
-Meaning:
-
-The problem isn’t bandwidth — it’s delivery stability.
-
-This is exactly the kind of issue Libreprobe is designed to reveal.
+Libreprobe might reveal: good speed, but high jitter. The issue isn't bandwidth — it's delivery stability. That's the problem Libreprobe is designed to expose.
 
 ---
-## How Libreprobe works
 
-Libreprobe combines connection visibility with performance measurement and behavioral interpretation.
+## When to use
 
----
-## What it does
-
-### Visibility  
-On page load, a Cloudflare Worker reads the headers attached to your request and returns them to your browser: IP, geolocation, ISP, ASN, TLS/HTTP versions, and the edge PoP handling your traffic.
-
-No lookup services. No third-party APIs. The data comes directly from the infrastructure serving you.
+- Calls lag despite good speed results
+- Gaming feels inconsistent or spiky
+- Streaming buffers randomly
+- Downloads stall or fluctuate
+- Debugging network or application performance
 
 ---
-### Throughput test  
-Measures sustained download capacity using parallel streams and chunk-event bucketing.
 
-Reports:
+## What it measures
 
-- Sustained speed (median post-ramp)  
-- Peak speed (p95)  
-- Variance and consistency  
-- Ramp time  
-- Transfer stats  
+### Visibility
+IP, geolocation, ISP, ASN, TLS/HTTP versions, and edge PoP — from Cloudflare headers, no third-party APIs.
 
-Designed to reflect real-world capacity — not juts short-lived burst speed.
+### Throughput
+Sustained download capacity via parallel streams. Reports median post-ramp speed, p95 peak, variance, ramp time, and transfer stats.
 
----
-### Stability test  
-Sends 100 probes at 100 ms intervals and measures:
-
-- Median RTT  
-- Jitter  
-- p90 latency  
-- Cold vs. warm handshake overhead  
-
-Results are visualised as live RTT and jitter charts with real-world interpretation.
+### Stability
+100 RTT probes at 100ms intervals. Measures median latency, jitter, p90 latency, and cold vs. warm handshake overhead. Live RTT and jitter charts with interpretation.
 
 ---
-## Who it’s for
 
-Libreprobe is useful for:
+## Architecture
 
-**Everyday users**  
-Trying to understand why their connection feels slow or unreliable.
-
-**Gamers and streamers**  
-Who care about stability, not just speed.
-
-**Developers and IT professionals**  
-Debugging performance, routing, or infrastructure issues.
-
-**Students and learners**  
-Trying to understand how real-world networks behave.
+Browser → CF Edge Function → CF Edge Streams → Browser metrics pipeline
 
 ---
-## Pages
 
-| Route | Description |
-|---|---|
-| `/` | Your IP, location, ASN, TLS/HTTP version, client↔edge map |
-| `/info/` | Full connection breakdown — device, network, and edge |
-| `/throughput/` | Sustained download test with live chart and advanced metrics |
-| `/stability/` | Latency and jitter test with live RTT and jitter charts |
+## Who this is for
 
+- Developers debugging performance
+- Network engineers investigating instability
+- Advanced users diagnosing ISP behaviour
+
+---
+
+## Self-hosting
+
+Requires:
+
+- Cloudflare account
+- Wrangler CLI
+- One KV namespace binding
+
+Quick deploy:
+
+```bash
+git clone https://github.com/grayguava/libreprobe.git
+cd libreprobe
+
+wrangler kv namespace create LIBREPROBE_THROUGHPUT_RL
+# add binding to wrangler.toml
+
+wrangler pages deploy .
+```
+
+---
+
+## Screenshots
+
+Libreprobe provides four diagnostic views:
+
+![Homepage](./screenshots/homepage.png)
 ![Info page](./screenshots/infopage.png)
-
 ![Throughput](./screenshots/throughput.png)
-
 ![Stability](./screenshots/stability.png)
 
 ---
 
 ## Methodology (short)
 
-Libreprobe prioritises realistic measurement over synthetic benchmarks.
-
-- Multi-stream sustained throughput testing  
-- Post-ramp variance modelling  
-- Percentile-based latency analysis  
-- Fixed-interval RTT probing  
-- Behaviour-focused interpretation layer  
+- Fixed-interval RTT avoids burst bias
+- Multi-stream tests expose congestion collapse
+- Percentile analysis beats averages
 
 For full details, metric definitions, and caveats see:
 
 [`docs/methodology/`](./docs/methodology/)
 
 ---
-## Stack
 
-- Runtime — Cloudflare Workers (V8 isolates)  
-- Hosting — Cloudflare Pages  
+## Versions
+
+- **Full** : production UI identical to hosted version
+- **Skinless** : logic-only bundle for embedding, testing, or custom frontends
+
+Both bundles deploy the same way. See the deployment docs for details.
+
+---
+
+## Stack (full version)
+
+Backend runs on Cloudflare Pages Functions (Worker runtime, V8 isolates). No servers or origin compute required.
+
 - Connection data — Cloudflare request headers (`CF-Ray`, `CF-IPCountry`, etc.)  
 - Map — OpenStreetMap via CARTO, rendered with Leaflet  
 - Charts — Apache ECharts  
-- Frontend — Vanilla JS (ES modules), no framework, no build step  
+- Frontend — Vanilla JS (ES modules), no framework, no build step
 
 ---
 ## Project structure
@@ -239,9 +203,22 @@ Libreprobe is stateless.
 - No analytics  
 - No tracking  
 - No stored results  
+- No storage at edge
+- No KV persistence except tokens
 
 Connection metadata is processed in memory to generate responses and discarded immediately.
 
 Full policy: https://libreprobe.qzz.io/privacy/
 
 ---
+
+## Feedback
+
+Open an issue if you tried Libreprobe and tell us:
+
+- What confused you
+- What broke
+- What felt unclear
+- Whether you used the hosted or self-hosted version
+
+Be blunt. We want honest feedback.

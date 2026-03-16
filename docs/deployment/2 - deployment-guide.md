@@ -1,8 +1,8 @@
 # Deployment guide
 
-Applies to both the full and skinless builds. See [choosing-a-version.md](./choosing-a-version.md) if you haven't decided which bundle to use.
+Libreprobe is deployed via Wrangler CLI. GUI upload and Git-connected deploys do not correctly wire the `functions/api/` Workers; Wrangler is the only supported deployment path.
 
-Libreprobe is deployed via Wrangler CLI. GUI upload and Git-connected deploys do not correctly wire the `functions/api/` Workers — Wrangler is the only supported deployment path.
+Applies to both the full and skinless builds. See [choosing-a-version.md](./choosing-a-version.md) if you haven't decided which bundle to use.
 
 ## Prerequisites
 
@@ -11,8 +11,18 @@ Libreprobe is deployed via Wrangler CLI. GUI upload and Git-connected deploys do
 
 ---
 
-## 1. Extract the bundle
+## 1. Get the source
 
+#### Either
+
+**Git clone (skinless):**
+```bash
+git clone https://github.com/grayguava/libreprobe.git
+cd libreprobe
+```
+#### or
+
+**Tarball (skinless or full):**
 ```bash
 tar -xzf libreprobe-v*.tar.gz
 cd libreprobe
@@ -32,11 +42,11 @@ Note the `id` from the output.
 
 ## 3. Configure `wrangler.toml`
 
-A `wrangler.toml.example` is included in the bundle. Copy and fill in your KV namespace id:
-
 ```bash
 cp wrangler.toml.example wrangler.toml
 ```
+
+Add your KV namespace id:
 
 ```toml
 name = "libreprobe"
@@ -49,8 +59,6 @@ binding = "LIBREPROBE_THROUGHPUT_RL"
 id = "<your-kv-namespace-id>"
 ```
 
-The binding name must be exactly `LIBREPROBE_THROUGHPUT_RL` — this is what `functions/api/stream/index.js` reads from `env`.
-
 ---
 
 ## 4. Deploy
@@ -59,12 +67,10 @@ The binding name must be exactly `LIBREPROBE_THROUGHPUT_RL` — this is what `fu
 wrangler pages deploy .
 ```
 
-Wrangler will create the Pages project on first run if it doesn't exist, and prompt for a project name.
-
 ---
 
 ## Notes
 
-- **KV counter** — the daily throughput test cap (`DAILY_TOKEN_LIMIT = 100`) is enforced via this KV namespace. Without the binding, the token endpoint returns 500 and the throughput test will not run.
-- **Local dev** — `wrangler pages dev .` works for local development. The KV binding will use a local KV store automatically.
-- **Cloudflare-only** — connection metadata (`request.cf`) is only populated when served through Cloudflare's network. Running from `file://` or a non-Cloudflare host will return null for all connection fields.
+- **KV counter** : used to enforce the daily throughput test cap (`DAILY_TOKEN_LIMIT = 100`). You can raise this to whatever your Cloudflare plan comfortably supports, but on the free tier anything above ~120/day is likely to hit CPU/subrequest limits or trigger abuse protections. If the KV binding is missing, the token endpoint returns 500 and the throughput test will not run.
+- **Local dev** : `wrangler pages dev .` works for local development. The KV binding will use a local KV store automatically.
+- **Cloudflare-only** : connection metadata (`request.cf`) is only populated when served through Cloudflare's network. Running from `file://` or a non-Cloudflare host will return null for all connection fields.
