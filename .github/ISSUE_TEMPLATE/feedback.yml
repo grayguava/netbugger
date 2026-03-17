@@ -1,0 +1,75 @@
+name: Feedback / Issue
+description: Report a bug, confusion, or suggestion related to Libreprobe
+title: "[Feedback]: "
+labels: ["feedback"]
+
+body:
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type
+      description: What best describes this?
+      options:
+        - Bug
+        - UI confusion
+        - Feature request
+        - Documentation issue
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser used
+      description: Select the browser used during testing (no additional environment details needed).
+      options:
+        - Firefox
+        - Chrome
+        - Edge
+        - Brave
+        - Safari
+        - Other (specify below)
+    validations:
+      required: true
+
+  - type: input
+    id: browser_other
+    attributes:
+      label: If "Other", specify browser
+      placeholder: e.g. LibreWolf, Mullvad, Waterfox
+
+  - type: textarea
+    id: issue
+    attributes:
+      label: What happened?
+      description: Provide clear reproduction steps + expected vs actual result.
+      placeholder: |
+        1. Did X
+        2. Clicked Y
+        3. Saw Z instead of expected result
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context (optional)
+      description: Logs, screenshots, notes — only if useful. Avoid sharing personal/system details.
+
+  - type: checkboxes
+    id: diagnostics
+    attributes:
+      label: Optional diagnostic sharing
+      description: Only include if you understand what you're sharing. This may expose network-related details.
+      options:
+        - label: I am intentionally including Libreprobe results or network-related diagnostics to help debugging.
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmation
+      options:
+        - label: I have avoided sharing unnecessary personal or system details.
+          required: true
