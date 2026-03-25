@@ -1,0 +1,89 @@
+======================================================================
+  sync-cloudflare-pops.py — 2026-03-25 07:10:18 UTC
+  Source : https://speed.cloudflare.com/locations
+======================================================================
+
+[1/4] Fetching Cloudflare PoP list ...
+       302 PoPs received from Cloudflare.
+
+[2/4] Reading your dataset ...
+       356 entries loaded from assets/data/cloudflare-edge-locations.json.
+
+[3/4] Syncing existing entries ...
+       Updated  : 0
+       Unchanged: 302
+       Not in CF: 54 (left untouched)
+
+[4/4] Adding new PoPs from Cloudflare list ...
+       Added: 0 new PoPs
+
+  Written: assets/data/cloudflare-edge-locations.json  (356 total entries)
+
+======================================================================
+  SUMMARY
+======================================================================
+  Coords/city synced : 0
+  Unchanged          : 302
+  Not in CF list     : 54
+  New PoPs added     : 0
+  Regions filled     : 0
+  Total entries now  : 356
+======================================================================
+
+----------------------------------------------------------------------
+  NOT IN CF LIST (left untouched)
+----------------------------------------------------------------------
+  BBI  Bhubaneswar, India
+  BER  Berlin, Germany
+  BHY  Beihai, China
+  BLA  Barcelona, Venezuela
+  CAN  Guangzhou, China
+  CCJ  Kozhikode, India
+  CGD  Changde, China
+  CGO  Zhengzhou, China
+  CKG  Chongqing, China
+  CSX  Changsha, China
+  CZX  Changzhou, China
+  DLC  Dalian, China
+  DMK  Bangkok, Thailand
+  DSS  Dakar, Senegal
+  ECN  Nicosia, Cyprus
+  EDI  Edinburgh, United Kingdom
+  FOC  Fuzhou, China
+  FUO  Foshan, China
+  HAK  Haikou, China
+  HGH  Hangzhou, China
+  HYN  Taizhou, China
+  IEV  Kyiv, Ukraine
+  IQN  Qingyang, China
+  JRS  Jerusalem, Israel
+  KHN  Nanchang, China
+  KIV  Chisinau, Moldova
+  KMG  Kunming, China
+  KWE  Guiyang, China
+  LTN  London, United Kingdom
+  MDW  Chicago, United States
+  MFE  McAllen, United States
+  NAY  Beijing, China
+  NLU  Mexico City, Mexico
+  NNG  Nanning, China
+  ORK  Cork, Ireland
+  PEK  Beijing, China
+  PVG  Shanghai, China
+  RKV  Reykjavik, Iceland
+  SAW  Istanbul, Turkey
+  SJW  Shijiazhuang, China
+  SZX  Shenzhen, China
+  TAO  Qingdao, China
+  TEN  Tongren, China
+  TFU  Chengdu, China
+  TNA  Jinan, China
+  TSA  Taipei, Taiwan, Province of China
+  TYN  Taiyuan, China
+  UBN  Ulaanbaatar, Mongolia
+  VAP  Valparaiso, Chile
+  VIT  Vitoria, Spain
+  XFN  Xiangyang, China
+  XNN  Xining, China
+  YIA  Yogyakarta, Indonesia
+  ZIA  Moscow, Russia
