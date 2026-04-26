@@ -2,7 +2,7 @@
 
 Find out why your internet feels bad — even when speed tests look good.
 
-👉 Try it instantly: https://libreprobe.qzz.io
+👉 Try it instantly: https://libreprobe.pages.dev
 
 ![Stability](./screenshots/stability.png)
 
