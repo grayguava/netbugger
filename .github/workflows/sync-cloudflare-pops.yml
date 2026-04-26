@@ -2,7 +2,7 @@ name: sync Cloudflare edge PoPs
 
 on:
   schedule:
-    - cron: "0 6 */3 * *"
+    - cron: "0 6 * * 0"
 
   push:
     paths:
