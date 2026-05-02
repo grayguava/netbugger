@@ -1,27 +1,37 @@
-# Libreprobe
+# Libreprobe — Network truth beyond speed tests
 
-Find out why your internet feels bad — even when speed tests look good.
+Speed tests say you're fast.  
+Libreprobe shows why you're not.
 
-👉 Try it instantly: https://libreprobe.pages.dev
+Measures real application-layer performance — not synthetic speed test bursts.
+
+👉 Try it instantly: https://libreprobe.pages.dev  
+(No signup, no tracking, runs in your browser)
 
 ![Stability](./screenshots/stability.png)
 
+Example output:
+
+❌ Very high latency with instability  
+→ Interactive apps will struggle  
+→ Likely routing or congestion issue
+
 ---
 
-## The problem
+### ⚠️ Why speed tests lie
 
-Speed tests show *bandwidth*. They don't show *delivery quality*. A connection can have 200 Mbps but still cause laggy calls, stuttering games, and buffering streams because of high jitter, latency variance, or inconsistent throughput.
+```
+Speedtest result:
+✔ 200 Mbps
+✔ Low ping
 
----
+Real experience:
+✖ Lag spikes in games
+✖ Call drops
+✖ Buffering streams
 
-## Example
-
-Your ISP promises 200 Mbps. Speed test confirms it. But:
-- VoIP calls stutter
-- Online games lag randomly
-- Streams buffer occasionally
-
-Libreprobe might reveal: good speed, but high jitter. The issue isn't bandwidth — it's delivery stability. That's the problem Libreprobe is designed to expose.
+→ The problem is instability, not speed.
+```
 
 ---
 
@@ -35,26 +45,35 @@ Libreprobe might reveal: good speed, but high jitter. The issue isn't bandwidth 
 
 ---
 
-## What it measures
+## What Libreprobe exposes
 
-### Visibility
+### Connection breakdown (Visibility)
+
 IP, geolocation, ISP, ASN, TLS/HTTP versions, and edge PoP — from Cloudflare headers, no third-party APIs.
 
-### Throughput
+### Sustained speed (Throughput)
+
 Sustained download capacity via parallel streams. Reports median post-ramp speed, p95 peak, variance, ramp time, and transfer stats.
 
-### Stability
+### Latency & Jitter (Stability)
+
 100 RTT probes at 100ms intervals. Measures median latency, jitter, p90 latency, and cold vs. warm handshake overhead. Live RTT and jitter charts with interpretation.
+
+Classifies connection quality — not just reports numbers.
 
 ---
 
 ## Architecture
+
+Based on fixed-interval RTT sampling and percentile analysis — not averages.
 
 Browser → CF Edge Function → CF Edge Streams → Browser metrics pipeline
 
 ---
 
 ## Who this is for
+
+If your internet "looks fast" but feels unreliable — this is for you.
 
 - Developers debugging performance
 - Network engineers investigating instability
@@ -90,8 +109,14 @@ Libreprobe provides four diagnostic views:
 
 ![Homepage](./screenshots/homepage.png)
 ![Info page](./screenshots/infopage.png)
-![Throughput](./screenshots/throughput.png)
-![Stability](./screenshots/stability.png)
+![Throughput - Sustained speed test](./screenshots/throughput.png)
+![Stability - Latency & jitter analysis](./screenshots/stability.png)
+
+Example output:
+
+❌ Very high latency with instability  
+→ Interactive apps will struggle  
+→ Likely routing or congestion issue
 
 ---
 
@@ -208,7 +233,7 @@ Libreprobe is stateless.
 
 Connection metadata is processed in memory to generate responses and discarded immediately.
 
-Full policy: https://libreprobe.qzz.io/privacy/
+Full policy: https://libreprobe.pages.dev/privacy/
 
 ---
 
