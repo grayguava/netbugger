@@ -1875,8 +1875,8 @@
     "city": "Bhubaneswar",
     "country": "India",
     "countryCode": "IN",
-    "latitude": 20.251021,
-    "longitude": 85.814747,
+    "latitude": 20.2444,
+    "longitude": 85.817802,
     "region": "Asia Pacific"
   },
   "CGY": {
@@ -2846,5 +2846,37 @@
     "latitude": 32.2719,
     "longitude": 35.0194,
     "region": "Middle East"
+  },
+  "JRG": {
+    "city": "Jharsuguda",
+    "country": "India",
+    "countryCode": "IN",
+    "latitude": 21.9135,
+    "longitude": 84.0504,
+    "region": "Asia Pacific"
+  },
+  "LJU": {
+    "city": "Ljubljana",
+    "country": "",
+    "countryCode": "SI",
+    "latitude": 46.223701,
+    "longitude": 14.4576,
+    "region": "Europe"
+  },
+  "PNQ": {
+    "city": "Pune",
+    "country": "India",
+    "countryCode": "IN",
+    "latitude": 18.5821,
+    "longitude": 73.919701,
+    "region": "Asia Pacific"
+  },
+  "WLG": {
+    "city": "Wellington",
+    "country": "New Zealand",
+    "countryCode": "NZ",
+    "latitude": -41.327202,
+    "longitude": 174.804993,
+    "region": "Oceania"
   }
 }
