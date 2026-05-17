@@ -1,0 +1,112 @@
+======================================================================
+  sync-cloudflare-pops.py — 2026-05-17 08:26:10 UTC
+  Source : https://speed.cloudflare.com/locations
+======================================================================
+
+[1/4] Fetching Cloudflare PoP list ...
+       306 PoPs received from Cloudflare.
+
+[2/4] Reading your dataset ...
+       356 entries loaded from assets/data/cloudflare-edge-locations.json.
+
+[3/4] Syncing existing entries ...
+       Updated  : 1
+       Unchanged: 301
+       Not in CF: 54 (left untouched)
+
+[4/4] Adding new PoPs from Cloudflare list ...
+       Added: 4 new PoPs
+
+  Written: assets/data/cloudflare-edge-locations.json  (360 total entries)
+
+======================================================================
+  SUMMARY
+======================================================================
+  Coords/city synced : 1
+  Unchanged          : 301
+  Not in CF list     : 54
+  New PoPs added     : 4
+  Regions filled     : 0
+  Total entries now  : 360
+======================================================================
+
+----------------------------------------------------------------------
+  COORD/FIELD UPDATES
+----------------------------------------------------------------------
+  BBI  Bhubaneswar
+    coords        (20.251021, 85.814747)  →  (20.2444, 85.817802)
+
+----------------------------------------------------------------------
+  NEW PoPs ADDED
+----------------------------------------------------------------------
+  JRG   Jharsuguda, India (IN)
+        lat=21.9135, lon=84.0504  [Asia Pacific]
+  LJU   Ljubljana, *** unknown — fill manually *** (SI)
+        lat=46.223701, lon=14.4576  [Europe]
+  PNQ   Pune, India (IN)
+        lat=18.5821, lon=73.919701  [Asia Pacific]
+  WLG   Wellington, New Zealand (NZ)
+        lat=-41.327202, lon=174.804993  [Oceania]
+
+----------------------------------------------------------------------
+  NOT IN CF LIST (left untouched)
+----------------------------------------------------------------------
+  BER  Berlin, Germany
+  BHY  Beihai, China
+  BLA  Barcelona, Venezuela
+  CAN  Guangzhou, China
+  CCJ  Kozhikode, India
+  CCP  Concepcion, Chile
+  CGD  Changde, China
+  CGO  Zhengzhou, China
+  CKG  Chongqing, China
+  CSX  Changsha, China
+  CZX  Changzhou, China
+  DLC  Dalian, China
+  DMK  Bangkok, Thailand
+  DSS  Dakar, Senegal
+  ECN  Nicosia, Cyprus
+  EDI  Edinburgh, United Kingdom
+  FOC  Fuzhou, China
+  FUO  Foshan, China
+  HAK  Haikou, China
+  HGH  Hangzhou, China
+  HYN  Taizhou, China
+  IEV  Kyiv, Ukraine
+  IQN  Qingyang, China
+  JRS  Jerusalem, Israel
+  KHN  Nanchang, China
+  KIV  Chisinau, Moldova
+  KMG  Kunming, China
+  KWE  Guiyang, China
+  LTN  London, United Kingdom
+  MDW  Chicago, United States
+  MFE  McAllen, United States
+  NAY  Beijing, China
+  NLU  Mexico City, Mexico
+  NNG  Nanning, China
+  ORK  Cork, Ireland
+  PEK  Beijing, China
+  PVG  Shanghai, China
+  RKV  Reykjavik, Iceland
+  SAW  Istanbul, Turkey
+  SJW  Shijiazhuang, China
+  SZX  Shenzhen, China
+  TAO  Qingdao, China
+  TEN  Tongren, China
+  TFU  Chengdu, China
+  TNA  Jinan, China
+  TSA  Taipei, Taiwan, Province of China
+  TYN  Taiyuan, China
+  UBN  Ulaanbaatar, Mongolia
+  VAP  Valparaiso, Chile
+  VIT  Vitoria, Spain
+  XFN  Xiangyang, China
+  XNN  Xining, China
+  YIA  Yogyakarta, Indonesia
+  ZIA  Moscow, Russia
+
+----------------------------------------------------------------------
+  UNKNOWN COUNTRY CODES — add to EXTRA_COUNTRIES in script
+----------------------------------------------------------------------
+  LJU  cca2=SI  city=Ljubljana
